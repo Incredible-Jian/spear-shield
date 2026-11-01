@@ -29,8 +29,9 @@ htmlcov/
 *.sqlite
 *.sqlite3
 *.db-journal
-data/
-cache/
+# 仅忽略根目录下的数据/缓存目录（避免误伤 src/spear_shield/data 包）
+/data/
+/cache/
 *.parquet
 *.feather
 
@@ -40,13 +41,13 @@ cache/
 *.token
 *.key
 *.pem
-secrets/
+/secrets/
 config/secrets.*
 *.secret
 
 # ===== 日志 =====
 *.log
-logs/
+/logs/
 
 # ===== 打包产物 =====
 releases/*.exe
