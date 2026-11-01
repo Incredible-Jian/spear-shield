@@ -5,7 +5,7 @@
 
 ---
 
-## Phase 0：环境检查与策略审计 ✅（当前阶段）
+## Phase 0：环境检查与策略审计 ✅
 
 - [x] 检查工作目录、Python/Git/gh 环境
 - [x] 完整读取策略 PDF（pdfminer.six 提取，UTF-8 存档）
@@ -14,38 +14,44 @@
 - [x] 数据源可行性评估（akshare 实测）→ `docs/architecture/data_source_assessment.md`
 - [x] 技术架构设计 → `docs/architecture/architecture.md`
 - [x] 开发路线图（本文件）
-- [ ] GitHub 认证状态检查（gh 未安装；需确认授权方式）
-- **交付物**：本报告 + 上述文档。**暂停，等负责人确认后再进入编码。**
+- [x] GitHub 认证与私有仓库创建（gh + SSH，private，保护策略 PDF）
+- **交付物**：本报告 + 上述文档。
 
 ---
 
-## Phase 1：项目初始化
+## Phase 1：项目初始化 ✅
 
-- 创建项目目录结构（src/spear_shield 各包 + tests + scripts + docs）
-- 初始化 Python 项目（pyproject.toml / requirements.txt）
-- 安装并锁定依赖（PySide6 等）
-- 编写 README、.gitignore、LICENSE
-- 搭建最小可启动 GUI（深色主题空壳）
-- 验证启动 → 第一次 Git Commit
+- [x] 项目目录结构（src/spear_shield 各包 + tests + scripts + docs）
+- [x] pyproject.toml（src-layout、动态版本、`spear-shield` 入口）
+- [x] 锁定依赖（PySide6 6.8.1.1 等）
+- [x] README、.gitignore、.gitattributes、LICENSE
+- [x] 最小可启动 GUI（深色主题空壳，8 页面导航）
+- [x] 验证启动 + Git Commit
 
-## Phase 2：数据引擎
+## Phase 2：数据引擎 ✅
 
-- `DataProvider` 抽象接口 + `AkShareProvider` / `SinaProvider` 实现
-- 接入 6 个核心标的/指数行情（含前复权）
-- 周线 / 月线聚合（交易日历、停牌处理）
-- SQLite 缓存 + SQLAlchemy 模型
-- 数据质量检查、更新时间管理、失败告警
-- 自动化测试 + Commit
+- [x] `DataProvider` 抽象接口 + `AkShareProvider` / `SinaProvider` 实现
+- [x] 接入核心 ETF / 指数行情（含前复权）
+- [x] 周线 / 月线聚合（末交易日结算口径）
+- [x] SQLite 缓存 + SQLAlchemy 模型（market_daily / margin_daily / data_update_log）
+- [x] 数据质量检查、更新时间管理、来源追溯
+- [x] 自动化测试 + Commit
 
-## Phase 3：指标引擎
+## Phase 3：技术指标引擎 ✅
 
-- 逐个实现：60月线斜率、60周线斜率、风格 Z-Score、股债性价比、IV百分位、两融水位、ATR、PE分位、RSI、成交量分位
-- 每个指标：独立函数 + 单元测试 + 公式说明 + 测试样本
-- 不可得指标（IV 等）完成接口 + 「不可计算」状态展示
-- 测试 + Commit
+- [x] SMA / EMA（60周/月线、10/30周线）
+- [x] MACD、RSI（Wilder）、布林带（ddof=0）、ATR（14 周 ATR 周线口径）
+- [x] 成交量均线 / 量比 / 52 周分位数
+- [x] 价格涨跌幅 / 偏离率 / 振幅 / 均线斜率
+- [x] `IndicatorEngine` 统一入口（不改动入参、无未来数据、周期隔离）
+- [x] 公式与口径文档 → `docs/indicators/indicator_specification.md`
+- [x] 手工可复核数值测试 + Commit
+
+> 宏观/策略指标（风格 Z-Score、股债性价比、IV 百分位、两融水位、PE 分位）在 Phase 4 策略引擎中实现——它们属于策略输入而非独立技术指标。
 
 ## Phase 4：策略引擎
 
+- 宏观指标：60月/周线斜率、风格 Z-Score、股债性价比、IV 百分位、两融水位、PE 分位（不可得项标记「不可计算/待确认」）
 - 五维宏观温度计、双周期共振矩阵
 - 四档建仓（仅实现已确认规则，第四档标记未定义）
 - P0-P3 离场规则、动态防守、仓位管理、规则优先级

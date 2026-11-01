@@ -28,6 +28,21 @@
 | 稳健收益池 | 短债指数 | 511360 短融ETF |
 | 流动性现金池 | 货币基金 | 511990 华宝添益 |
 
+## 当前开发进度
+
+- [x] Phase 0 环境检查与策略审计
+- [x] Phase 1 项目初始化（深色主题 GUI 空壳）
+- [x] Phase 2 数据引擎（数据源抽象 + AkShare/Sina + SQLite 缓存 + 周/月聚合）
+- [x] Phase 3 技术指标引擎（SMA/EMA、MACD、RSI、布林带、ATR、成交量分位、价格指标）
+- [ ] Phase 4 策略引擎（宏观指标 + 五维温度计 + 四档建仓 + P0-P3 离场）
+- [ ] Phase 5 桌面可视化
+- [ ] Phase 6 历史回测
+- [ ] Phase 7 系统测试与优化
+- [ ] Phase 8 打包发布
+- [ ] Phase 9 GitHub 发布
+
+指标公式与口径见 [docs/indicators/indicator_specification.md](docs/indicators/indicator_specification.md)。
+
 ## 环境要求
 
 - Python 3.11 ~ 3.12（开发环境 3.12.4）
