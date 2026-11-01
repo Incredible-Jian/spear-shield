@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spear-shield"
+description = "矛与盾·全天候周期共振系统 — All-Weather Cycle Resonance System（量化分析桌面软件）"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "MIT" }
+authors = [{ name = "Incredible-Jian" }]
+keywords = ["quant", "trading", "backtest", "pyqt", "pyside6", "akshare"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dynamic = ["version"]
+
+dependencies = [
+    # 6.12.0 的 Qt6Core.dll 依赖未版本化 icuuc.dll 且不自带 ICU，与 Anaconda 的 ICU 73 符号不兼容，
+    # 导致 DLL 加载失败；6.8.x 已验证可用，故锁定 <6.9。
+    "PySide6>=6.8.1,<6.9",
+    "pandas>=2.0,<3",
+    "numpy>=1.24,<3",
+    "plotly>=5.20,<6",
+    "SQLAlchemy>=2.0,<3",
+    "akshare>=1.14,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4,<9",
+    "pytest-qt>=4.4,<5",
+    "pyinstaller>=6.0,<7",
+]
+
+[project.scripts]
+spear-shield = "spear_shield.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Incredible-Jian/spear-shield"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "spear_shield.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"

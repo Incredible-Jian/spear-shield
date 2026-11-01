@@ -1,0 +1,67 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+*.so
+
+# ===== 虚拟环境 =====
+.venv/
+venv/
+env/
+ENV/
+
+# ===== 测试与缓存 =====
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ===== 本地数据与数据库 =====
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+data/
+cache/
+*.parquet
+*.feather
+
+# ===== 密钥与敏感信息 =====
+.env
+.env.*
+*.token
+*.key
+*.pem
+secrets/
+config/secrets.*
+*.secret
+
+# ===== 日志 =====
+*.log
+logs/
+
+# ===== 打包产物 =====
+releases/*.exe
+releases/*.zip
+releases/*.tar.gz
+
+# ===== IDE / 编辑器 =====
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.iml
+
+# ===== 操作系统 =====
+.DS_Store
+Thumbs.db
+desktop.ini
