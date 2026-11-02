@@ -1,7 +1,8 @@
 """主窗口：左侧导航栏 + 右侧工作区。"""
+
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer, QSettings
 from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -13,6 +14,7 @@ from PySide6.QtWidgets import (
     QStatusBar,
     QVBoxLayout,
     QWidget,
+    QPushButton,
 )
 
 from .. import __app_name__, __version__
@@ -24,6 +26,10 @@ from .pages.data_management import DataManagementPage
 from .pages.market_analysis import MarketAnalysisPage
 from .pages.signal_center import SignalCenterPage
 from .pages.thermometer import ThermometerPage
+from .pages.weekly_report import WeeklyReportPage
+from .controller import Controller
+from ..config.settings import get_data_dir
+from ..database.engine import Database
 
 
 class MainWindow(QMainWindow):
@@ -38,12 +44,28 @@ class MainWindow(QMainWindow):
         ("历史回测", BacktestCenterPage),
         ("模拟账户", AccountPage),
         ("数据管理", DataManagementPage),
+        ("每周报告", WeeklyReportPage),
     ]
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(
+        self, parent: QWidget | None = None, *, database=None, data_dir=None
+    ) -> None:
         super().__init__(parent)
+        self.data_dir = data_dir or get_data_dir()
+        from pathlib import Path
+
+        self.data_dir = Path(self.data_dir)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.database = database or Database(
+            f"sqlite:///{(self.data_dir/'spear_shield.db').as_posix()}"
+        )
+        self.database.init()
+        self.controller = Controller(self.database, self.data_dir, self)
+        self.settings = QSettings(
+            str(self.data_dir / "desktop.ini"), QSettings.IniFormat
+        )
         self.setWindowTitle(f"{__app_name__} · V{__version__}")
-        self.resize(1280, 800)
+        self.resize(1440, 960)
         self.setMinimumSize(1024, 680)
 
         central = QWidget()
@@ -55,7 +77,18 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         self._build_status_bar()
+        self.controller.changed.connect(self._refresh_visible)
+        self.controller.message.connect(self.statusBar().showMessage)
         self.nav_list.setCurrentRow(0)
+        if self.settings.value("geometry"):
+            self.restoreGeometry(self.settings.value("geometry"))
+        for key, combo in self._preferences():
+            try:
+                value = int(self.settings.value(key, combo.currentIndex()))
+            except (TypeError, ValueError):
+                continue
+            if 0 <= value < combo.count():
+                combo.setCurrentIndex(value)
 
     def _build_nav(self) -> QWidget:
         nav = QFrame()
@@ -96,6 +129,9 @@ class MainWindow(QMainWindow):
             self.nav_list.addItem(item)
         self.nav_list.currentRowChanged.connect(self._on_nav_changed)
         layout.addWidget(self.nav_list, 1)
+        refresh = QPushButton("重新读取本地缓存")
+        refresh.clicked.connect(self.controller.refresh)
+        layout.addWidget(refresh)
 
         version = QLabel(f"V{__version__}")
         version.setObjectName("AppTitleEn")
@@ -107,14 +143,41 @@ class MainWindow(QMainWindow):
     def _build_workspace(self) -> QWidget:
         self.stack = QStackedWidget()
         for _, page_cls in self.NAV_ITEMS:
-            self.stack.addWidget(page_cls())
+            self.stack.addWidget(page_cls(controller=self.controller))
         return self.stack
 
     def _build_status_bar(self) -> None:
         bar = QStatusBar()
         self.setStatusBar(bar)
-        bar.showMessage("数据源：待接入  |  数据更新时间：—  |  仅供研究参考，不构成投资建议")
+        bar.showMessage("本地缓存观察 / 非实时  |  五维不完整  |  模拟研究工作区")
 
     def _on_nav_changed(self, row: int) -> None:
         if 0 <= row < self.stack.count():
             self.stack.setCurrentIndex(row)
+            self._refresh_visible()
+
+    def _refresh_visible(self):
+        page = self.stack.currentWidget()
+        if page and hasattr(page, "refresh"):
+            page.refresh()
+
+    def closeEvent(self, event):
+        self.controller.job.shutdown()
+        self.settings.setValue("geometry", self.saveGeometry())
+        for key, combo in self._preferences():
+            self.settings.setValue(key, combo.currentIndex())
+        self.settings.sync()
+        self.database.close()
+        super().closeEvent(event)
+
+    def _preferences(self):
+        market = self.stack.widget(4)
+        data = self.stack.widget(7)
+        return [
+            ("market/symbol", market.symbol),
+            ("market/period", market.period),
+            ("market/indicator", market.indicator),
+            ("data/provider", data.provider),
+            ("data/symbol", data.symbol),
+            ("data/adjust", data.adjust),
+        ]

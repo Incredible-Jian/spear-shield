@@ -5,6 +5,7 @@
 - 未接入真实数据的模块一律使用 EmptyState / PlaceholderCard，
   明确标注「待接入」，绝不展示虚构行情或信号。
 """
+
 from __future__ import annotations
 
 from typing import Iterable
@@ -32,7 +33,9 @@ def _set_label_style(label: QLabel, obj_name: str) -> None:
 class BasePage(QWidget):
     """统一页面骨架：标题头部 + 可滚动内容区。"""
 
-    def __init__(self, title: str, subtitle: str, parent: QWidget | None = None) -> None:
+    def __init__(
+        self, title: str, subtitle: str, parent: QWidget | None = None
+    ) -> None:
         super().__init__(parent)
         self.setObjectName("Page")
 
@@ -128,15 +131,24 @@ class PlaceholderCard(QFrame):
         top.addWidget(title_label)
         top.addStretch(1)
         top.addWidget(Badge(badge_text, variant="neutral"))
+        self.badge = top.itemAt(top.count() - 1).widget()
         layout.addLayout(top)
 
         value_label = QLabel(value)
+        self.value_label = value_label
         _set_label_style(value_label, "CardValue")
         layout.addWidget(value_label)
 
         hint_label = QLabel(hint)
+        self.hint_label = hint_label
         _set_label_style(hint_label, "CardHint")
         layout.addWidget(hint_label)
+
+    def update_value(self, value="—", hint="", status="缓存", variant="neutral"):
+        self.value_label.setText(str(value))
+        self.hint_label.setText(hint)
+        self.badge.setText(status)
+        self.badge.set_variant(variant)
 
 
 class Badge(QLabel):

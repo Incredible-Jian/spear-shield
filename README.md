@@ -35,7 +35,7 @@
 - [x] Phase 2 数据引擎（数据源抽象 + AkShare/Sina + SQLite 缓存 + 周/月聚合）
 - [x] Phase 3 技术指标引擎（SMA/EMA、MACD、RSI、布林带、ATR、成交量分位、价格指标）
 - [x] Phase 4 策略引擎基础（宏观工具 + 五维状态 + 共振矩阵 + 逐条规则/待确认门控 + 仓位状态 + SQLite审计）
-- [ ] Phase 5 桌面可视化
+- [x] Phase 5 桌面工作区（九页导航、真实缓存K线/指标、审计、模拟记账、数据管理、PDF/Excel周报）
 - [ ] Phase 6 历史回测
 - [ ] Phase 7 系统测试与优化
 - [ ] Phase 8 打包发布
@@ -45,7 +45,9 @@
 
 Phase 4 的规则覆盖与接口见 [策略引擎规范](docs/strategy/strategy_engine_specification.md)，执行范围见 [Phase 4 任务书](docs/development/phase4_task.md)。
 **完整策略尚不能正式运行**：IV缺失、股债性价比待确认，其他歧义条件按清单门控，默认不产生核弹建仓。引擎逐条返回触发/未触发/数据缺失/待确认/未定义。
-信号计算与模拟执行分离；GUI接线仍在Phase 5。原有Phase 2行情缺少历史发布时间和已结算元数据，不能直接当作无前视偏差的策略输入。
+信号计算与模拟执行分离。GUI已接入真实缓存观察与审计历史；未确认输入仅可运行明确标注的可用性诊断。原有Phase 2行情缺少历史发布时间和已结算元数据，不能直接当作无前视偏差的策略输入。
+
+桌面操作、数据口径及限制见 [工作区使用说明](docs/user_manual/desktop_workbench.md)。回测页当前为配置/结果界面，计算引擎在Phase 6开发。
 
 ## 环境要求
 
@@ -66,17 +68,18 @@ pip install -r requirements.txt -r requirements-dev.txt
 # 3. 以可编辑模式安装本项目
 pip install -e .
 
-# 4. 启动软件（三选一）
+# 4. 启动软件（二选一，VS Code也可F5选择项目调试配置）
 spear-shield                      # 控制台入口
 python -m spear_shield            # 模块方式
-python src/spear_shield/main.py   # 直接运行（需保证 src 在路径中）
 ```
 
 ## 运行测试
 
 ```bash
-pytest
+python -m pytest --ignore=tests/integration/test_akshare_provider.py
 ```
+
+真实网络测试依赖供应商，需单独限时运行，不能将接口超时当作通过。GUI更新使用独立进程，默认45秒超时可取消。
 
 ## 项目结构
 

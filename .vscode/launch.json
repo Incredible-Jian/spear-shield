@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Spear & Shield 桌面应用",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "spear_shield",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {"PYTHONPATH": "${workspaceFolder}/src"}
+    }
+  ]
+}

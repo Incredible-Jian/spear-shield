@@ -1,4 +1,5 @@
 """日志配置：控制台 + 文件轮转，异常必记录。"""
+
 from __future__ import annotations
 
 import logging
@@ -16,13 +17,14 @@ def get_logger(name: str = "spear_shield") -> logging.Logger:
     global _configured
     logger = logging.getLogger(name)
     if not _configured:
-        _configure_root(name)
+        _configure_root()
         _configured = True
     return logger
 
 
-def _configure_root(name: str) -> None:
-    root = logging.getLogger(name)
+def _configure_root() -> None:
+    # 所有模块共用应用父logger，不能只把handler挂在首次调用的子模块上。
+    root = logging.getLogger("spear_shield")
     root.setLevel(logging.INFO)
     fmt = logging.Formatter(
         "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s",

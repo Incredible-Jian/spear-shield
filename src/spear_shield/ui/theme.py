@@ -3,27 +3,28 @@
 统一的设计规范：深蓝灰背景、红涨绿跌行情色、清晰的数据卡片。
 所有页面共享本主题，禁止页面内各自定义颜色。
 """
+
 from __future__ import annotations
 
-from PySide6.QtGui import QColor, QPalette
+from PySide6.QtGui import QColor, QPalette, QFontDatabase, QFont
 from PySide6.QtWidgets import QApplication
 
 # ===== 配色规范（唯一颜色来源）=====
 COLORS = {
-    "bg": "#0b0f14",           # 窗口主背景（深蓝灰）
-    "panel": "#0e141b",        # 导航/侧栏背景
-    "card": "#131a22",         # 数据卡片背景
-    "card_hover": "#16202c",   # 卡片悬浮
-    "border": "#232c38",       # 边框
-    "text": "#dce4ee",         # 主文字
-    "text_muted": "#8b98a9",   # 次级文字
-    "text_faint": "#5c6b7d",   # 弱化文字
-    "accent": "#3b82f6",       # 强调蓝
+    "bg": "#0b0f14",  # 窗口主背景（深蓝灰）
+    "panel": "#0e141b",  # 导航/侧栏背景
+    "card": "#131a22",  # 数据卡片背景
+    "card_hover": "#16202c",  # 卡片悬浮
+    "border": "#232c38",  # 边框
+    "text": "#dce4ee",  # 主文字
+    "text_muted": "#8b98a9",  # 次级文字
+    "text_faint": "#5c6b7d",  # 弱化文字
+    "accent": "#3b82f6",  # 强调蓝
     "accent_hover": "#4f8ef7",
-    "up": "#ef5350",           # 涨（红，A股约定）
-    "down": "#26a69a",         # 跌（绿，A股约定）
-    "warn": "#f59e0b",         # 预警（琥珀）
-    "neutral": "#64748b",      # 中性/未知
+    "up": "#ef5350",  # 涨（红，A股约定）
+    "down": "#26a69a",  # 跌（绿，A股约定）
+    "warn": "#f59e0b",  # 预警（琥珀）
+    "neutral": "#64748b",  # 中性/未知
 }
 
 _STYLESHEET = """
@@ -34,6 +35,7 @@ QWidget {
     font-size: 13px;
 }
 QMainWindow, QDialog { background-color: %(bg)s; }
+QLabel { background: transparent; }
 
 /* ===== 左侧导航栏 ===== */
 #NavBar { background-color: %(panel)s; border-right: 1px solid %(border)s; }
@@ -116,6 +118,13 @@ QToolTip {
     padding: 4px;
 }
 QScrollArea { border: none; background: transparent; }
+QTableWidget { background: %(card)s; alternate-background-color: %(panel)s; border: 1px solid %(border)s; gridline-color: %(border)s; selection-background-color: #16283a; selection-color: %(text)s; }
+QHeaderView::section { background: %(panel)s; color: %(text_muted)s; border: none; border-bottom: 1px solid %(border)s; padding: 8px; font-weight: 600; }
+QComboBox,QDateEdit,QDoubleSpinBox,QSpinBox { background: %(card)s; border: 1px solid %(border)s; border-radius: 5px; padding: 7px; min-height: 20px; }
+QComboBox QAbstractItemView { background: %(card)s; selection-background-color: #16283a; }
+QPlainTextEdit,QTextBrowser { background: %(card)s; color: %(text)s; border: 1px solid %(border)s; padding: 12px; }
+QPushButton:disabled { color: %(text_faint)s; background: %(panel)s; }
+QCheckBox { spacing: 8px; color: %(text_muted)s; }
 """
 
 
@@ -126,6 +135,16 @@ def get_stylesheet() -> str:
 
 def apply_theme(app: QApplication) -> None:
     """应用深色主题到 QApplication。"""
+    # offscreen平台不会总是枚举Windows字体；显式读取本机合法安装的字体，不复制字体入库。
+    import os
+    from pathlib import Path
+
+    fonts = Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"
+    for filename in ("msyh.ttc", "msyhbd.ttc", "segoeui.ttf"):
+        file = fonts / filename
+        if file.is_file():
+            QFontDatabase.addApplicationFont(str(file))
+    app.setFont(QFont("Microsoft YaHei UI", 10))
     app.setStyle("Fusion")
     palette = QPalette()
     palette.setColor(QPalette.Window, QColor(COLORS["bg"]))

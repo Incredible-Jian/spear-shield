@@ -7,6 +7,7 @@
 东方财富接口存在限流，已加指数退避重试；最终失败会原样抛出，
 由注册表降级或上层标记「数据不可用」。
 """
+
 from __future__ import annotations
 
 import pandas as pd
@@ -67,7 +68,9 @@ class AkShareProvider(DataProvider):
         return symbol.asset_type in ("etf", "index")
 
     @retry(tries=3, delay=2.0, backoff=2.0, logger=logger)
-    def _fetch_etf(self, symbol: Symbol, start: str, end: str) -> pd.DataFrame:
+    def _fetch_etf(
+        self, symbol: Symbol, start: str, end: str, adjust: str = "qfq"
+    ) -> pd.DataFrame:
         import akshare as ak  # 延迟导入，便于测试与启动加速
 
         return ak.fund_etf_hist_em(
@@ -75,7 +78,7 @@ class AkShareProvider(DataProvider):
             period="daily",
             start_date=_to_yyyymmdd(start),
             end_date=_to_yyyymmdd(end),
-            adjust="qfq",
+            adjust="" if adjust == "none" else adjust,
         )
 
     @retry(tries=3, delay=2.0, backoff=2.0, logger=logger)
@@ -92,8 +95,10 @@ class AkShareProvider(DataProvider):
     def fetch_daily(
         self, symbol: Symbol, start: str, end: str, adjust: str = "qfq"
     ) -> pd.DataFrame:
+        if adjust not in ("qfq", "hfq", "none"):
+            raise ValueError("adjust必须为qfq/hfq/none")
         if symbol.asset_type == "etf":
-            raw = self._fetch_etf(symbol, start, end)
+            raw = self._fetch_etf(symbol, start, end, adjust)
         elif symbol.asset_type == "index":
             raw = self._fetch_index(symbol, start, end)
         else:
@@ -116,12 +121,8 @@ class AkShareProvider(DataProvider):
                 out[col] = float("nan")
             out[col] = pd.to_numeric(out[col], errors="coerce")
 
-        out = out[out["date"].between(
-            pd.to_datetime(start), pd.to_datetime(end)
-        )]
+        out = out[out["date"].between(pd.to_datetime(start), pd.to_datetime(end))]
         # 若接口返回分市场多行，按日期聚合（数值求和）
         if out["date"].duplicated().any():
-            out = out.groupby("date", as_index=False)[
-                list(MARGIN_COLUMNS[1:])
-            ].sum()
+            out = out.groupby("date", as_index=False)[list(MARGIN_COLUMNS[1:])].sum()
         return out.sort_values("date").reset_index(drop=True)
