@@ -34,7 +34,7 @@
 - [x] Phase 1 项目初始化（深色主题 GUI 空壳）
 - [x] Phase 2 数据引擎（数据源抽象 + AkShare/Sina + SQLite 缓存 + 周/月聚合）
 - [x] Phase 3 技术指标引擎（SMA/EMA、MACD、RSI、布林带、ATR、成交量分位、价格指标）
-- [ ] Phase 4 策略引擎（宏观指标 + 五维温度计 + 四档建仓 + P0-P3 离场）
+- [x] Phase 4 策略引擎基础（宏观工具 + 五维状态 + 共振矩阵 + 逐条规则/待确认门控 + 仓位状态 + SQLite审计）
 - [ ] Phase 5 桌面可视化
 - [ ] Phase 6 历史回测
 - [ ] Phase 7 系统测试与优化
@@ -42,6 +42,10 @@
 - [ ] Phase 9 GitHub 发布
 
 指标公式与口径见 [docs/indicators/indicator_specification.md](docs/indicators/indicator_specification.md)。
+
+Phase 4 的规则覆盖与接口见 [策略引擎规范](docs/strategy/strategy_engine_specification.md)，执行范围见 [Phase 4 任务书](docs/development/phase4_task.md)。
+**完整策略尚不能正式运行**：IV缺失、股债性价比待确认，其他歧义条件按清单门控，默认不产生核弹建仓。引擎逐条返回触发/未触发/数据缺失/待确认/未定义。
+信号计算与模拟执行分离；GUI接线仍在Phase 5。原有Phase 2行情缺少历史发布时间和已结算元数据，不能直接当作无前视偏差的策略输入。
 
 ## 环境要求
 

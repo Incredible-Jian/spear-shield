@@ -28,6 +28,7 @@ class Database:
 
     def init(self) -> None:
         """建表并写入当前 schema 版本。"""
+        from . import strategy_audit  # noqa: F401 — 注册增量表，不修改既有行情表
         Base.metadata.create_all(self.engine)
         with self.session_factory() as session:
             self._ensure_schema_version(session)
