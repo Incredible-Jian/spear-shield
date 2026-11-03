@@ -56,7 +56,7 @@ def test_chinese_titles_and_real_cache_chart_widgets(window, qtbot):
     assert len(page.price.chart().series()) >= 2
     for period in (1, 2, 0):
         page.period.setCurrentIndex(period)
-    assert not window.stack.widget(5).run.isEnabled()
+    assert window.stack.widget(5).run.isEnabled()
 
 
 def test_diagnostic_is_labelled_and_no_orders_are_created(window, qtbot):

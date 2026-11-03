@@ -28,7 +28,15 @@ class MarketChart(QChartView):
         self.setRubberBand(QChartView.RectangleRubberBand)
         self.draw(pd.DataFrame(), title="暂无真实缓存")
 
-    def draw(self, frame, title="", lines=("ma60",), candles=False, thresholds=()):
+    def draw(
+        self,
+        frame,
+        title="",
+        lines=("ma60",),
+        candles=False,
+        thresholds=(),
+        max_points=180,
+    ):
         old = self.chart()
         chart = QChart()
         chart.setAnimationOptions(QChart.NoAnimation)
@@ -43,7 +51,9 @@ class MarketChart(QChartView):
             old.deleteLater()
         if frame.empty:
             return
-        data = frame.tail(180).reset_index(drop=True)
+        data = (frame if max_points is None else frame.tail(max_points)).reset_index(
+            drop=True
+        )
         times = [
             pd.Timestamp(d).tz_localize("Asia/Shanghai").timestamp() * 1000
             for d in data.date
