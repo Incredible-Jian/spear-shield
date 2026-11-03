@@ -10,11 +10,44 @@ from ..strategy.engine import StrategyEngine
 from ..strategy.types import Policy, Position
 
 SH = ZoneInfo("Asia/Shanghai")
-FULL_STRATEGY_BLOCKERS = [
-    "原始规则仍有待确认项（见 rules_pending_confirmation.md），IV缺失、股债性价比待确认",
-    "缓存没有历史时点可知的前复权版本/指标发布时间，不能证明不存在前视偏差",
-    "尚无覆盖区间的公司行动/停牌/交易日历完整性证明与批次持仓、盘中ATR执行数据",
-]
+
+
+def strategy_readiness(workspace, sources_root=None):
+    """按本次真实输入检查，不再用写死的“所有规则未确认”阻塞。"""
+    from ..services.research_dataset import load_operational_dataset
+    from ..data.research_sources import DEFAULT_OUTPUT
+
+    blockers = []
+    try:
+        dataset = load_operational_dataset(workspace, sources_root or DEFAULT_OUTPUT)
+    except (ValueError, OSError, KeyError) as exc:
+        return None, [f"历史证据集不可用：{exc}"]
+    for name, label in (
+        ("iv_short", "短期IV"),
+        ("iv_long", "长期IV"),
+        ("margin_pct", "两融占流通市值比"),
+        ("pe", "399006历史PE"),
+    ):
+        if name not in dataset.macros or dataset.macros[name].empty:
+            blockers.append(f"{label}历史缺失；不将未知条件判为正常")
+    if "equity_bond_ratio" not in dataset.macros:
+        numerator_state = (
+            "分子H00300已核验"
+            if dataset.provenance.get("equity_bond_numerator", {}).get("sha256")
+            else "分子H00300历史缺失"
+        )
+        blockers.append(
+            f"股债性价比{numerator_state}；二级债基分母及共同尺度/1.0极值仍不能唯一重建"
+        )
+    if dataset.dividend.empty or dataset.growth.empty:
+        blockers.append("缺少399006/H30269指数历史")
+    blockers.extend(
+        [
+            "宏观历史实际发布时间/历史修订版本未认证，目前只有明确标记的经济日期延迟假设",
+            "当前前复权缓存与完整公司行动/停牌状态未联合认证，不能称完整策略PIT验收",
+        ]
+    )
+    return dataset, blockers
 
 
 def replay_decisions(snapshots, *, policy=None, position=None):
@@ -35,13 +68,25 @@ def replay_decisions(snapshots, *, policy=None, position=None):
 
 
 def run_benchmarks(
-    workspace, config, *, selection="comparison", defense_weights=None, calendar=None
+    workspace,
+    config,
+    *,
+    selection="comparison",
+    defense_weights=None,
+    calendar=None,
+    sources_root=None,
 ):
     if config.mode != "qfq_research":
         raise ValueError(
             "缓存研究入口仅支持前复权研究；原始价公司行动模式使用独立引擎接口"
         )
-    if selection not in ("strategy", "attack", "defense", "comparison"):
+    if selection not in (
+        "strategy",
+        "attack",
+        "defense",
+        "comparison",
+        "strategy_research",
+    ):
         raise ValueError("未知回测方案")
     weights = defense_weights or {"563020": 0.6, "511360": 0.3, "511990": 0.1}
     # 固定权重仅为公开、可调整的基准场景，不表示当前Z/正式防守裁决。
@@ -52,14 +97,47 @@ def run_benchmarks(
         raise ValueError("防守基准三个权重须合计100%")
     output = []
     if selection in ("strategy", "comparison"):
+        dataset, blockers = strategy_readiness(workspace, sources_root)
         output.append(
             {
                 "name": "矛与盾完整策略",
                 "status": "blocked",
-                "blockers": FULL_STRATEGY_BLOCKERS,
+                "blockers": blockers,
                 "result": None,
             }
         )
+    if selection == "strategy_research":
+        from .strategy_replay import StrategyReplay
+
+        dataset, blockers = strategy_readiness(workspace, sources_root)
+        try:
+            if dataset is None:
+                raise ValueError("；".join(blockers))
+            frames = {
+                s: workspace.history(s, "qfq")
+                for s in ("159915", "563020", "511360", "511990")
+            }
+            if any(df.empty for df in frames.values()):
+                raise ValueError("四只核心ETF前复权执行行情必须齐备")
+            result = StrategyReplay(dataset, frames).run(config)
+            output.append(
+                {
+                    "name": result.metadata["name"],
+                    "status": "incomplete_strategy_research",
+                    "blockers": blockers,
+                    "result": result,
+                }
+            )
+        except (ValueError, OSError, KeyError) as exc:
+            output.append(
+                {
+                    "name": "授权口径研究回放",
+                    "status": "blocked",
+                    "blockers": [str(exc)],
+                    "result": None,
+                }
+            )
+        return output
     for key, name, allocation in (
         ("attack", "持有创业板ETF（前复权单位研究）", {"159915": 1.0}),
         ("defense", "防守固定初始配比（买入持有，不再平衡）", weights),

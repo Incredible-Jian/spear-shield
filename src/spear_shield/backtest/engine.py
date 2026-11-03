@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, time
+from copy import deepcopy
 import hashlib
 import json
 from math import floor
@@ -12,7 +13,14 @@ import numpy as np
 import pandas as pd
 
 from .metrics import performance
-from .models import BacktestConfig, BacktestResult, MarketData, Target, CORE
+from .models import (
+    BacktestConfig,
+    BacktestResult,
+    MarketData,
+    Target,
+    ProtectiveStop,
+    CORE,
+)
 
 SH = ZoneInfo("Asia/Shanghai")
 
@@ -101,12 +109,31 @@ def validate_market(data: MarketData, config: BacktestConfig):
 
 class BacktestEngine:
     def run(
-        self, data: MarketData, config: BacktestConfig, targets=(), *, on_close=None
+        self,
+        data: MarketData,
+        config: BacktestConfig,
+        targets=(),
+        *,
+        on_close=None,
+        on_execution=None,
+        stop_provider=None,
     ):
         """on_close只接收截至当日的副本；返回Target或None，可独立注入策略。
 
         给定targets必须来自外部已知信息；时点校验不能认证调用者的数据真实性。
         未成交订单逐日重试至成交/被新目标替代/区间结束，均记录原因。
+
+        on_execution(receipt)在每次目标尝试/终止及止损检查后调用。receipt含
+        type(target/stop)、target、stop、date、status、completed、trades(本次)、
+        target_trades(本目标累计)和state(cash/qty/cost/open/prices/receivable)。
+        扁平quantities/costs/cash/prices对应state的qty/cost/cash/prices；
+        event/day为type/date别名。deferred列出目标各标的延期原因。
+        completed不保证精确目标权重，现金和整手约束正常完成也为True；
+        部分延期/未成交为False，只按trades推进成交状态。state不含当日
+        high/low/close；prices为open或截至本事件的最近实际成交价。
+        stop_provider(opening, history_until_previous_session, state_at_open)在
+        开盘目标执行前调用，返回仅当日有效的ProtectiveStop或None。固定线
+        按日low严格小于trigger触发；这是日OHLC预置止损模型，无分钟时点。
         """
         sessions, bars = validate_market(data, config)
         schedule = sorted(targets, key=lambda t: t.signal_at)
@@ -127,6 +154,80 @@ class BacktestEngine:
         trades, orders, signals, curve = [], [], [], []
         pending = None
         cursor = 0
+        target_fills = {}
+
+        def state(prices=None):
+            opens = {s: float(bars[s].loc[day, "open"]) for s in bars}
+            return {
+                "cash": cash,
+                "qty": dict(qty),
+                "cost": dict(cost),
+                "open": opens,
+                "prices": dict(execution_prices if prices is None else prices),
+                "receivable": sum(v for _, v in receivables),
+            }
+
+        def receipt(
+            event,
+            target,
+            status,
+            completed,
+            fills=(),
+            stop=None,
+            prices=None,
+            deferred=(),
+        ):
+            if on_execution is not None:
+                snapshot = state(prices)
+                on_execution(
+                    {
+                        "type": event,
+                        "event": event,
+                        "target": target,
+                        "stop": stop,
+                        "date": day,
+                        "day": day,
+                        "status": status,
+                        "completed": completed,
+                        "trades": deepcopy(list(fills)),
+                        "target_trades": deepcopy(
+                            target_fills.get(
+                                target.signal_at if target is not None else None, []
+                            )
+                        ),
+                        "deferred": deepcopy(list(deferred)),
+                        "state": snapshot,
+                        "quantities": dict(snapshot["qty"]),
+                        "costs": dict(snapshot["cost"]),
+                        "cash": snapshot["cash"],
+                        "prices": dict(snapshot["prices"]),
+                    }
+                )
+
+        def sell(s, amount, price, reference, reason, signal_at):
+            nonlocal cash
+            fee = amount * price * config.fee_rate
+            released = cost[s] * amount / qty[s]
+            dividend_pnl = income_basis[s] * amount / qty[s]
+            income_basis[s] -= dividend_pnl
+            cost[s] -= released
+            qty[s] -= amount
+            cash += amount * price - fee
+            price_pnl = amount * price - fee - released
+            return {
+                "date": day.isoformat(),
+                "signal_at": signal_at,
+                "symbol": s,
+                "side": "sell",
+                "price": price,
+                "quantity": amount,
+                "fee": fee,
+                "slippage_cost": amount * abs(price - reference),
+                "realized_pnl": price_pnl + dividend_pnl,
+                "realized_price_pnl": price_pnl,
+                "dividend_pnl": dividend_pnl,
+                "reason": reason,
+            }
 
         def record(target):
             signals.append(
@@ -153,11 +254,13 @@ class BacktestEngine:
                         "reason": older.reason,
                     }
                 )
+                receipt("target", older, "superseded", True)
                 if pending.signal_at > target.signal_at:
                     return
             pending = target
 
         for day in sessions:
+            execution_prices = {s: float(bars[s].loc[day, "open"]) for s in bars}
             opening = datetime.combine(day, time(9, 30), SH)
             closing = datetime.combine(day, time(15, 30), SH)
             # 当日开盘之前已知的信号才可成交，同日盘后信号只能在后续交易日开盘。
@@ -188,7 +291,32 @@ class BacktestEngine:
             cash += paid
             receivables = [(due, v) for due, v in receivables if due > day]
             due_value = sum(v for _, v in receivables)
+            bought_today = {s: 0.0 for s in bars}
+
+            def sellable(s):
+                return (
+                    max(0.0, qty[s] - bought_today[s])
+                    if (config.enforce_t_plus_one and s in {"159915", "563020"})
+                    else qty[s]
+                )
+
+            stop = None
+            if stop_provider is not None:
+                history = {
+                    s: df.loc[df.index < day].copy(deep=True).reset_index()
+                    for s, df in bars.items()
+                }
+                stop = stop_provider(opening, history, state())
+                if stop is not None:
+                    if not isinstance(stop, ProtectiveStop):
+                        raise ValueError("stop_provider须返回ProtectiveStop或None")
+                    if stop.known_at >= opening:
+                        raise ValueError("止损known_at须严格早于当日开盘")
+                    if stop.symbol not in bars:
+                        raise ValueError("止损标的缺少行情")
             if pending:
+                trade_start = len(trades)
+                order_start = len(orders)
                 opens = {s: float(bars[s].loc[day, "open"]) for s in bars}
                 equity = cash + due_value + sum(qty[s] * opens[s] for s in bars)
                 desired = {
@@ -245,6 +373,21 @@ class BacktestEngine:
                         )
                         if amount <= 1e-9:
                             continue
+                        if side == "sell" and amount > sellable(s) + 1e-9:
+                            delayed = True
+                            amount = (
+                                floor(sellable(s) / config.lot_size) * config.lot_size
+                            )
+                            orders.append(
+                                {
+                                    "date": day.isoformat(),
+                                    "symbol": s,
+                                    "status": "deferred_t_plus_one",
+                                    "reason": pending.reason,
+                                }
+                            )
+                            if amount <= 1e-9:
+                                continue
                         price = opens[s] * (
                             1 + config.slippage
                             if side == "buy"
@@ -258,6 +401,7 @@ class BacktestEngine:
                             cash -= amount * price + fee
                             cost[s] += amount * price + fee
                             qty[s] += amount
+                            bought_today[s] += amount
                         else:
                             released = cost[s] * amount / qty[s]
                             dividend_pnl = income_basis[s] * amount / qty[s]
@@ -297,8 +441,80 @@ class BacktestEngine:
                         "reason": pending.reason,
                     }
                 )
+                fills = trades[trade_start:]
+                for fill in fills:
+                    execution_prices[fill["symbol"]] = fill["price"]
+                target_fills.setdefault(pending.signal_at, []).extend(deepcopy(fills))
+                receipt(
+                    "target",
+                    pending,
+                    orders[-1]["status"],
+                    not delayed,
+                    fills,
+                    deferred=[
+                        o
+                        for o in orders[order_start:]
+                        if o["status"].startswith("deferred_")
+                    ],
+                )
                 if not delayed:
                     pending = None
+            if stop is not None:
+                s = stop.symbol
+                bar = bars[s].loc[day]
+                fills = []
+                status = "not_triggered"
+                # 停牌即使输入low越线也不能成交；不推断触发分钟。
+                if bar["suspended"]:
+                    status = "deferred_suspension"
+                elif float(bar["low"]) < stop.trigger_price:
+                    requested = (
+                        qty[s]
+                        if stop.fraction == 1
+                        else (
+                            floor((qty[s] * stop.fraction + 1e-10) / config.lot_size)
+                            * config.lot_size
+                        )
+                    )
+                    amount = requested
+                    status = "completed_with_cash_and_lot_constraints"
+                    if amount > sellable(s) + 1e-9:
+                        amount = floor(sellable(s) / config.lot_size) * config.lot_size
+                        status = "deferred_t_plus_one"
+                    if amount > 1e-9:
+                        reference = min(float(bar["open"]), stop.trigger_price)
+                        fill = sell(
+                            s,
+                            amount,
+                            reference * (1 - config.slippage),
+                            reference,
+                            stop.reason,
+                            stop.known_at.isoformat(),
+                        )
+                        fill["execution_model"] = "daily_ohlc_preset_stop"
+                        trades.append(fill)
+                        fills.append(fill)
+                    elif not qty[s]:
+                        status = "no_position"
+                orders.append(
+                    {
+                        "date": day.isoformat(),
+                        "symbol": s,
+                        "status": status,
+                        "reason": stop.reason,
+                        "execution_model": "daily_ohlc_preset_stop",
+                    }
+                )
+                for fill in fills:
+                    execution_prices[fill["symbol"]] = fill["price"]
+                receipt(
+                    "stop",
+                    None,
+                    status,
+                    status not in {"deferred_suspension", "deferred_t_plus_one"},
+                    fills,
+                    stop,
+                )
             values = {s: qty[s] * float(bars[s].loc[day, "close"]) for s in bars}
             equity = cash + due_value + sum(values.values())
             row = {
@@ -332,6 +548,7 @@ class BacktestEngine:
                     "reason": pending.reason,
                 }
             )
+            receipt("target", pending, "unfilled_end", False)
         # 区间结束以后的预先给定目标不可进入过去的信号报告。
         signals.sort(key=lambda item: datetime.fromisoformat(item["signal_at"]))
         frame = pd.DataFrame(curve)
@@ -383,6 +600,8 @@ class BacktestEngine:
                 "effective_end": sessions[-1].isoformat(),
                 "sell_lot_policy": "partial_round_down_to_lot; full_liquidation_allows_split_residual",
                 "execution": "next_session_open_with_fees_slippage_and_lot_constraints",
+                "stop_execution": "daily_ohlc_preset_stop; low<trigger; min(open,trigger)*(1-slippage); no_intraday_timestamp; valid_for_one_session",
+                "enforce_t_plus_one": config.enforce_t_plus_one,
                 "limitations": (
                     [
                         "回溯前复权研究单位，不是真实份额成交；不保证分红再投资总收益",
@@ -390,7 +609,7 @@ class BacktestEngine:
                     ]
                     if config.mode == "qfq_research"
                     else [
-                        "公司行动与日历完整性为输入方声明；不含T+1/涨跌停队列与市场冲击"
+                        "公司行动与日历完整性为输入方声明；T+1为可选份额约束；不含涨跌停队列与市场冲击"
                     ]
                 ),
             },

@@ -58,6 +58,7 @@ class BacktestCenterPage(BasePage):
                 "持有创业板ETF · 研究",
                 "防守固定配比 · 研究",
                 "三方案对比",
+                "授权口径策略研究回放（显示缺失规则）",
             ]
         )
         self.defense = []
@@ -157,9 +158,13 @@ class BacktestCenterPage(BasePage):
             "initial_cash": self.capital.value(),
             "fee_rate": self.fee.value() / 100,
             "slippage": self.slippage.value() / 100,
-            "selection": ("strategy", "attack", "defense", "comparison")[
-                self.benchmark.currentIndex()
-            ],
+            "selection": (
+                "strategy",
+                "attack",
+                "defense",
+                "comparison",
+                "strategy_research",
+            )[self.benchmark.currentIndex()],
             "defense_weights": weights,
             "mode": "qfq_research",
         }
@@ -218,9 +223,13 @@ class BacktestCenterPage(BasePage):
             result = item["result"]
             metrics = result["metrics"] if result else {}
             status = (
-                "部分区间研究"
-                if item["status"] == "partial_research"
-                else "仅研究" if result else "阻塞"
+                "不完整策略研究"
+                if item["status"] == "incomplete_strategy_research"
+                else (
+                    "部分区间研究"
+                    if item["status"] == "partial_research"
+                    else "仅研究" if result else "阻塞"
+                )
             )
             rows.append(
                 [
@@ -238,6 +247,11 @@ class BacktestCenterPage(BasePage):
                 messages.append(
                     f"{item['name']}：{result['metadata'].get('coverage_note', '')}"
                 )
+                if item["status"] == "incomplete_strategy_research":
+                    messages.append(
+                        f"此研究回放进攻成交{result['metadata'].get('attack_trade_count', 0)}笔，防守成交{result['metadata'].get('defense_trade_count', 0)}笔；"
+                        f"缺失输入：{', '.join(result['metadata'].get('input_gaps', []))}。收益仅代表实际执行的可用子模块，不是完整策略绩效。"
+                    )
                 results.append(result)
         fill(self.comparison, rows)
         if results:
@@ -254,9 +268,14 @@ class BacktestCenterPage(BasePage):
                     value,
                     "首个可计算方案；夏普Rf=0 / 年252日",
                     (
-                        "部分区间"
-                        if result["metadata"].get("coverage_partial", False)
-                        else "仅研究"
+                        "策略不完整"
+                        if "complete_strategy_validated" in result["metadata"]
+                        and not result["metadata"]["complete_strategy_validated"]
+                        else (
+                            "部分区间"
+                            if result["metadata"].get("coverage_partial", False)
+                            else "仅研究"
+                        )
                     ),
                 )
             curve = None

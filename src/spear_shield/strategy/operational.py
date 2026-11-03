@@ -1,0 +1,88 @@
+"""负责人授权下的可复核操作口径；不是声称原文曾规定这些参数。"""
+
+from .types import Policy
+
+DEFINITION_VERSION = "delegated-2026-11-03-v1"
+REFERENCE = "docs/strategy/operational_definitions.md#2026-11-03-final"
+
+
+def operational_policy() -> Policy:
+    # 股债比值尺度/极值不能由任意基日归一化凭空确定，暂不批准。
+    definitions = (
+        "signal_series_definition",
+        "zscore_definition",
+        "effective_break_definition",
+        "bullish_definition",
+        "retest_definition",
+        "bear_rally_high_definition",
+        "breakout_volume_definition",
+        "candle_definition",
+        "stall_definition",
+        "divergence_definition",
+        "double_top_definition",
+        "bottom_definition",
+        "above_ma30_definition",
+        "volume_baseline_definition",
+        "rsi_definition",
+        "pe_definition",
+        "iv_definition",
+        "margin_definition",
+        "margin_redline",
+        "margin_clear_definition",
+        "bear_precondition_conflict",
+        "fast_bear_precedence",
+        "single_trade_risk_definition",
+        "catchup_definition",
+        "profit_drawdown_definition",
+        "restore_definition",
+        "entry_completion_definition",
+        "week_direction_definition",
+        "defense_fuse_definition",
+        "defense_transfer_definition",
+        "same_priority_definition",
+        "entry_precedence_definition",
+        "atr_drawdown_definition",
+    )
+    return Policy(
+        {key: f"{DEFINITION_VERSION}:{REFERENCE}" for key in definitions},
+        {
+            "margin_redline_pct": 2.3,
+            "margin_clear_pct": 2.0,
+            "risk_budget_pct": 3.0,
+            "signal_symbol": "399006",
+            "style_dividend_symbol": "H30269",
+            "zscore_ddof": 0,
+            "zscore_include_current": False,
+            "zscore_window": 156,
+            "iv_short_window": 252,
+            "iv_long_window": 756,
+            "iv_long_underlying": "沪深300股指",
+            "pe_window": 1260,
+            "volume_baseline_weeks": 13,
+            "stall_return_abs_pct": 1.0,
+            "low_volume_ratio": 0.7,
+            "high_volume_ratio": 1.5,
+            "upper_shadow_fraction": 0.6,
+            "divergence_window": 26,
+            "same_priority": "largest_reduction",
+            "entry_precedence": (
+                "ENTRY_NUCLEAR",
+                "ENTRY_CATCHUP",
+                "ENTRY_BEAR",
+                "ENTRY_FIRST",
+                "ENTRY_FAST",
+                "ENTRY_SECOND",
+                "ENTRY_THIRD",
+                "P3_RESTORE",
+            ),
+            "defense_transfer": "all_to_511360",
+            "defense_scope": "only_when_attack_zero",
+            "negative_month_fast_cap": 0.2,
+            "profit_drawdown_basis": "peak",
+            "atr_once_per_week": True,
+            "third_lock_scope": "entry_cycle",
+            "restore_limit_scope": "entry_cycle",
+            "risk_budget_method": "per_action",
+            "risk_gap_stress_pct": 1.0,
+        },
+    )

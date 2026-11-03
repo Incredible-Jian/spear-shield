@@ -22,8 +22,11 @@ class BacktestConfig:
     slippage: float = 0.0005
     mode: str = "qfq_research"
     lot_size: int = 1
+    enforce_t_plus_one: bool = False
 
     def __post_init__(self):
+        if not isinstance(self.enforce_t_plus_one, bool):
+            raise ValueError("enforce_t_plus_one须为布尔值")
         if (
             self.start > self.end
             or not isfinite(self.initial_cash)
@@ -116,6 +119,37 @@ class Target:
             or sum(self.weights.values()) > 1 + 1e-12
         ):
             raise ValueError("仅限核心ETF，权重和不得超过100%")
+
+
+@dataclass(frozen=True)
+class ProtectiveStop:
+    """仅159915的日OHLC预置止损；known_at须严格早于执行日开盘。"""
+
+    symbol: str
+    trigger_price: float
+    fraction: float
+    known_at: datetime
+    reason: str
+
+    def __post_init__(self):
+        if (
+            self.symbol != "159915"
+            or not isfinite(self.trigger_price)
+            or self.trigger_price <= 0
+            or not isfinite(self.fraction)
+            or not 0 < self.fraction <= 1
+            or not isinstance(self.known_at, datetime)
+            or self.known_at.tzinfo is None
+            or self.known_at.utcoffset() is None
+            or not self.reason.strip()
+        ):
+            raise ValueError(
+                "非法预置止损：仅159915、正价格、比例(0,1]及带时区已知时间"
+            )
+
+
+# 兼容需求文档中的拼写；规范名称为ProtectiveStop。
+ProtectedStop = ProtectiveStop
 
 
 @dataclass

@@ -6,6 +6,7 @@ from .models import (
     BacktestResult,
     CorporateAction,
     MarketData,
+    ProtectiveStop,
     Target,
     TradingCalendar,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "BacktestResult",
     "CorporateAction",
     "MarketData",
+    "ProtectiveStop",
     "Target",
     "TradingCalendar",
 ]

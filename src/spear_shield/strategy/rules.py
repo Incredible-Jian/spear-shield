@@ -48,7 +48,7 @@ def exit_rules(s: Snapshot, p: Position, policy: Policy) -> tuple[RuleResult, ..
 
     eligible = s.get("eligible_lot_weight")
     valid_lots = number(eligible) and 0 <= eligible <= p.attack_weight
-    fraction = eligible / p.attack_weight if valid_lots else 1.0
+    fraction = eligible / p.attack_weight if valid_lots and p.attack_weight > 0 else 1.0
     add("P1_FALSE_BREAK", 1, (
         numeric("跌破60周线", ("week_close", "week_ma60"), lambda c, m: c < m,
                 "周收盘<60周均线"),
@@ -77,12 +77,35 @@ def exit_rules(s: Snapshot, p: Position, policy: Policy) -> tuple[RuleResult, ..
               "连续4周收盘<=建仓周最高；每周(高-低)/前收<4%；累计涨跌±3%")),
         Action("reduce", .5), "时间成本止损减半；建仓完成口径须确认")
 
-    add("P1_ATR", 1, (
-        confirmed_numeric(s, policy, "atr_drawdown_definition", ("max_week_drop_price", "week_atr14"),
-                          lambda drop, atr: atr >= 0 and drop > 2 * atr,
-                          "同价格单位的单周最大下跌价差>2*14周ATR（取值时点已确认）"),),
-        Action("reduce", .5, timing="intraday"),
-        "单周最大下跌价差>2*14周ATR；价差基准/盘中ATR取值时点待确认")
+    add(
+        "P1_ATR",
+        1,
+        (
+            fixed(
+                "本周ATR尚未执行",
+                (
+                    (
+                        None
+                        if s.get("atr_stop_executed_this_week") is None
+                        else not bool(s.get("atr_stop_executed_this_week"))
+                    )
+                    if policy.parameters.get("atr_once_per_week")
+                    else True
+                ),
+                "授权操作口径：固定止损单每周至多执行一次，避免同一跌幅重复减半",
+            ),
+            confirmed_numeric(
+                s,
+                policy,
+                "atr_drawdown_definition",
+                ("max_week_drop_price", "week_atr14"),
+                lambda drop, atr: atr >= 0 and drop > 2 * atr,
+                "同价格单位的单周最大下跌价差>2*14周ATR（取值时点已确认）",
+            ),
+        ),
+        Action("reduce", 0.5, timing="intraday"),
+        "单周最大下跌价差>2*14周ATR；价差基准/盘中ATR取值时点待确认",
+    )
 
     add("P2_STYLE", 2, (
         numeric("风格泡沫", ("zscore",), lambda z: z > 2, "Z>2"),
@@ -133,10 +156,25 @@ def exit_rules(s: Snapshot, p: Position, policy: Policy) -> tuple[RuleResult, ..
         Action("reduce", .5), "第二顶缩量减半")
     add("P3_NECKLINE", 3, (defined("below_neckline", "double_top_definition"),),
         Action("clear", 1), "跌破已确认双顶颈线，全清")
-    add("P3_TRAILING", 3, (
-        numeric("浮盈", ("profit_pct",), lambda v: v > 100, "浮盈>100%"),
-        defined("drawdown_8", "profit_drawdown_definition")),
-        Action("clear", 1), "浮盈>100%且回撤8%全清；浮盈取峰值或当前值待确认")
+    add(
+        "P3_TRAILING",
+        3,
+        (
+            numeric(
+                "浮盈",
+                (
+                    ("peak_profit_pct",)
+                    if policy.parameters.get("profit_drawdown_basis") == "peak"
+                    else ("profit_pct",)
+                ),
+                lambda v: v > 100,
+                "浮盈>100%（授权口径可采用峰值浮盈）",
+            ),
+            defined("drawdown_8", "profit_drawdown_definition"),
+        ),
+        Action("clear", 1),
+        "浮盈>100%且回撤8%全清；浮盈取峰值或当前值待确认",
+    )
     add("P3_STALL", 3, (
         numeric("浮盈", ("profit_pct",), lambda v: v > 120, "浮盈>120%"),
         defined("high_volume_stall", "stall_definition")),
@@ -155,15 +193,38 @@ def entry_rules(s: Snapshot, p: Position, policy: Policy) -> tuple[RuleResult, .
                          "60周线斜率连续2周>=0.1%（1=1%）")
     monthly = numeric("月线战略方向", ("month_slope",), lambda v: v > 0, "60月线斜率>0")
     redline = margin_entry_check(s, policy)
-    guards = (fixed("阶梯未锁", not p.nuclear, "核弹后关闭后续阶梯"), redline,
-              defined("risk_budget_pass", "single_trade_risk_definition"))
+    legacy_risk = (
+        ()
+        if policy.parameters.get("risk_budget_method") == "per_action"
+        else (defined("risk_budget_pass", "single_trade_risk_definition"),)
+    )
+    guards = (
+        fixed("阶梯未锁", not p.nuclear, "核弹后关闭后续阶梯"),
+        redline,
+        *legacy_risk,
+    )
     first_conditions = (slope2, monthly, defined("effective_above_ma60", "effective_break_definition"),
                         defined("bullish_week", "bullish_definition"),
                         numeric("放量", ("volume_pct52",), lambda v: 60 <= v <= 100, "52周量分位>=60（前40%）"))
     out = []
 
     def add(rule, conditions, action, explanation):
-        out.append(result(rule, 4, (*guards, *conditions), action, explanation))
+        risk = ()
+        if policy.parameters.get("risk_budget_method") == "per_action":
+            risk = (
+                confirmed_numeric(
+                    s,
+                    policy,
+                    "single_trade_risk_definition",
+                    ("stop_distance_pct", "execution_cost_buffer_pct"),
+                    lambda distance, buffer: distance >= 0
+                    and buffer >= 0
+                    and action.fraction * (distance + buffer)
+                    <= policy.parameters["risk_budget_pct"],
+                    f"此动作增量{action.fraction}×(止损距离+双边成本/滑点+跳空压力)<=预算",
+                ),
+            )
+        out.append(result(rule, 4, (*guards, *risk, *conditions), action, explanation))
 
     no_base = fixed("无底仓", p.attack_weight == 0 and not p.stages, "无权益且未建第一档")
     add("ENTRY_FIRST", (no_base, *first_conditions), Action("entry", .5, stages=(1,)),
@@ -184,12 +245,36 @@ def entry_rules(s: Snapshot, p: Position, policy: Policy) -> tuple[RuleResult, .
         defined("bear_entry_allowed", "bear_precondition_conflict"),
         *first_conditions[2:]), Action("entry", .2, stages=(1,)),
         "熊市20%与月线前置条件矛盾，须确认豁免关系")
-    add("ENTRY_FAST", (no_base, slope2,
-        numeric("快速涨幅", ("week_return_pct",), lambda v: v >= 8, "周涨幅>=8%"),
-        numeric("放量", ("volume_pct52",), lambda v: 60 <= v <= 100, "量分位>=60"),
-        confirmed_numeric(s, policy, "pe_definition", ("pe_percentile",), lambda v: 0 <= v < 50, "PE分位<50%"),
-        defined("fast_entry_allowed", "fast_bear_precedence")),
-        Action("entry", .5, stages=(1,)), "快速通道50%，仅豁免月线；负月线与20%上限关系待确认")
+    add(
+        "ENTRY_FAST",
+        (
+            no_base,
+            slope2,
+            numeric("快速涨幅", ("week_return_pct",), lambda v: v >= 8, "周涨幅>=8%"),
+            numeric("放量", ("volume_pct52",), lambda v: 60 <= v <= 100, "量分位>=60"),
+            confirmed_numeric(
+                s,
+                policy,
+                "pe_definition",
+                ("pe_percentile",),
+                lambda v: 0 <= v < 50,
+                "PE分位<50%",
+            ),
+            defined("fast_entry_allowed", "fast_bear_precedence"),
+        ),
+        Action(
+            "entry",
+            (
+                policy.parameters.get("negative_month_fast_cap", 0.5)
+                if policy.approved("fast_bear_precedence")
+                and number(s.get("month_slope"))
+                and s.get("month_slope") <= 0
+                else 0.5
+            ),
+            stages=(1,),
+        ),
+        "快速通道豁免月线；已授权口径负月线最高20%，非负月线50%",
+    )
     normal_base = fixed("常规阶梯底仓", p.attack_weight > 0 and 1 in p.stages and
                         not p.nuclear and p.entry_mode in ("normal", "catchup"),
                         "已记录常规/补投底仓；熊市/快速通道不默认为常规底仓")

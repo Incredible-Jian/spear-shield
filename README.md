@@ -36,7 +36,7 @@
 - [x] Phase 3 技术指标引擎（SMA/EMA、MACD、RSI、布林带、ATR、成交量分位、价格指标）
 - [x] Phase 4 策略引擎基础（宏观工具 + 五维状态 + 共振矩阵 + 逐条规则/待确认门控 + 仓位状态 + SQLite审计）
 - [x] Phase 5 桌面工作区（九页导航、真实缓存K线/指标、审计、模拟记账、数据管理、PDF/Excel周报）
-- [ ] Phase 6 历史回测（执行引擎/真实基准研究/桌面报告已交付；完整策略受规则和历史数据阻塞）
+- [ ] Phase 6 历史回测（执行引擎/真实基准/授权口径策略回放已交付；完整验收仍受实际数据缺口限制）
 - [ ] Phase 7 系统测试与优化
 - [ ] Phase 8 打包发布
 - [ ] Phase 9 GitHub 发布
@@ -44,10 +44,12 @@
 指标公式与口径见 [docs/indicators/indicator_specification.md](docs/indicators/indicator_specification.md)。
 
 Phase 4 的规则覆盖与接口见 [策略引擎规范](docs/strategy/strategy_engine_specification.md)，执行范围见 [Phase 4 任务书](docs/development/phase4_task.md)。
-**完整策略尚不能正式运行**：IV缺失、股债性价比待确认，其他歧义条件按清单门控，默认不产生核弹建仓。引擎逐条返回触发/未触发/数据缺失/待确认/未定义。
+**完整策略尚未通过正式验收**：本轮负责人已授权工程师自主查证并选择操作定义，33项算法凭据已版本化；完整IV、股债分母/尺度与历史发布版本等事实仍不能制造。引擎逐条返回触发/未触发/数据缺失/待确认/未定义，不默认产生核弹建仓。
 信号计算与模拟执行分离。GUI已接入真实缓存观察与审计历史；未确认输入仅可运行明确标注的可用性诊断。原有Phase 2行情缺少历史发布时间和已结算元数据，不能直接当作无前视偏差的策略输入。
 
 桌面操作见 [工作区使用说明](docs/user_manual/desktop_workbench.md)。历史回测现可运行真实缓存的创业板/固定防守基准研究，支持费用、滑点、全区间曲线和ZIP报告；完整策略会列出阻塞项，未完成正式策略资金回测。使用和口径见 [回测手册](docs/user_manual/backtesting.md)，真实验收及剩余缺口见 [Phase 6 记录](docs/development/phase6_results.md)。
+
+补齐阶段增加“授权口径策略研究回放”，连接因果特征、Phase4规则与实际成交回执，提供独立日历、免费历史源/哈希、跨源核对与时点复权重建。它会显示仍缺失的输入及进攻/防守真实成交数，不把可用子模块收益当完整策略收益。见[本轮补齐记录](docs/development/phase6_completion_results.md)与[最终操作定义](docs/strategy/operational_definitions.md#2026-11-03-final)。
 
 ## 环境要求
 

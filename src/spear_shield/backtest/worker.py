@@ -37,6 +37,7 @@ def main():
                     config,
                     selection=request["selection"],
                     defense_weights=request["defense_weights"],
+                    sources_root=request.get("research_sources"),
                 )
                 payload = {
                     "generated_at": datetime.now(timezone.utc).isoformat(),

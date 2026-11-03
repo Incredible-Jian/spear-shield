@@ -1,0 +1,479 @@
+{
+  "last_run_validation": {
+    "563020_event_reconstruction_vs_vendor": {
+      "common_dates": 695,
+      "left_only": 0,
+      "right_only": 0,
+      "tolerance_abs": 0.001,
+      "mismatch_count": 0,
+      "max_absolute_error": 2.220446049250313e-16,
+      "max_error_basis_points": 2.2182278214288847e-12,
+      "meaning": "仅核对重合日期价格一致性，不证明两源独立、无修订或历史实际可知"
+    },
+    "563020_cumulative_dividends_cross_source": {
+      "common_dates": 10,
+      "left_only": 0,
+      "right_only": 0,
+      "tolerance_abs": 1e-06,
+      "mismatch_count": 0,
+      "max_absolute_error": 1.3877787807814457e-17,
+      "max_error_basis_points": 1.901066822988282e-12,
+      "meaning": "仅核对重合日期价格一致性，不证明两源独立、无修订或历史实际可知"
+    },
+    "399006_cross_source": {
+      "common_dates": 3985,
+      "left_only": 0,
+      "right_only": 0,
+      "tolerance_abs": 0.001,
+      "mismatch_count": 3047,
+      "max_absolute_error": 0.5099999999999909,
+      "max_error_basis_points": 2.7125495306225083,
+      "meaning": "仅核对重合日期价格一致性，不证明两源独立、无修订或历史实际可知"
+    },
+    "399006_precision_normalized": {
+      "common_dates": 3985,
+      "left_only": 0,
+      "right_only": 0,
+      "tolerance_abs": 0.005500001,
+      "mismatch_count": 6,
+      "max_absolute_error": 0.5099999999999909,
+      "max_error_basis_points": 2.7125495306225083,
+      "meaning": "仅核对重合日期价格一致性，不证明两源独立、无修订或历史实际可知"
+    },
+    "399006_threshold_sensitivity_2024_onwards": {
+      "week": {
+        "common_periods": 146,
+        "slope_direction_disagreements": 0,
+        "slope_0_1_disagreements": 0,
+        "close_vs_ma60_disagreements": 0
+      },
+      "month": {
+        "common_periods": 34,
+        "slope_direction_disagreements": 0,
+        "slope_0_1_disagreements": 0,
+        "close_vs_ma60_disagreements": 0
+      }
+    },
+    "replay": {
+      "status": "incomplete_strategy_research",
+      "blockers": [
+        "短期IV历史缺失；不将未知条件判为正常",
+        "长期IV历史缺失；不将未知条件判为正常",
+        "399006历史PE历史缺失；不将未知条件判为正常",
+        "股债性价比分子H00300已核验；二级债基分母及共同尺度/1.0极值仍不能唯一重建",
+        "宏观历史实际发布时间/历史修订版本未认证，目前只有明确标记的经济日期延迟假设",
+        "当前前复权缓存与完整公司行动/停牌状态未联合认证，不能称完整策略PIT验收"
+      ],
+      "timer_ticks_50ms": 333,
+      "report_saved": true,
+      "metrics": {
+        "annual_return": 0.07804487035893411,
+        "closed_trade_count": 66,
+        "fees": 171.21782799135,
+        "final_equity": 123662.07099650867,
+        "max_drawdown": -0.11252713085103405,
+        "payoff_ratio": 968.7584568295184,
+        "profit_factor": 1937.516913659037,
+        "sharpe": 0.8245708485999819,
+        "slippage_cost": 285.3381754999619,
+        "total_return": 0.23662070996508677,
+        "trade_count": 138,
+        "win_rate": 0.6666666666666666
+      },
+      "attack_trade_count": 0,
+      "defense_trade_count": 138,
+      "audits": 146,
+      "input_gaps": [
+        "equity_bond_ratio",
+        "iv_long_pct",
+        "iv_short_pct",
+        "pe_percentile",
+        "peg"
+      ]
+    }
+  },
+  "source_snapshots": [
+    {
+      "key": "etf_159915_daily_unadjusted",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T03:47:07.702860+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3615,
+          "coverage": {
+            "日期": {
+              "start": "2011-12-09",
+              "end": "2026-11-03",
+              "dated_rows": 3615
+            }
+          },
+          "sha256": "4e3686d8f213d0377afd52dc199a8bcebbf402c78e7a5cd35283ccb5425530de"
+        }
+      ]
+    },
+    {
+      "key": "etf_159915_splits",
+      "source_url": "https://fundf10.eastmoney.com/fhsp_159915.html",
+      "retrieved_at": "2026-11-03T03:48:55.720373+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 1,
+          "coverage": {
+            "拆分折算日": {
+              "start": "2011-11-30",
+              "end": "2011-11-30",
+              "dated_rows": 1
+            }
+          },
+          "sha256": "f28f10c65f1c1c9d279cf89796f32a375d157597d213b93e65023f08d655077d"
+        }
+      ]
+    },
+    {
+      "key": "etf_511360_daily_unadjusted",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T03:47:19.745243+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 1476,
+          "coverage": {
+            "日期": {
+              "start": "2020-09-25",
+              "end": "2026-11-03",
+              "dated_rows": 1476
+            }
+          },
+          "sha256": "52dcb3fd97837e40cdcfa568e0cdce8abb04e02b696b907aec207b5d1b2629c1"
+        }
+      ]
+    },
+    {
+      "key": "etf_511360_splits",
+      "source_url": "https://fundf10.eastmoney.com/fhsp_511360.html",
+      "retrieved_at": "2026-11-03T03:47:14.845179+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 1,
+          "coverage": {
+            "拆分折算日": {
+              "start": "2020-08-24",
+              "end": "2020-08-24",
+              "dated_rows": 1
+            }
+          },
+          "sha256": "66d90ea6fc1230717a42bb17073c35009f14bf485a89f8e5c0624bea49cb9342"
+        }
+      ]
+    },
+    {
+      "key": "etf_511990_daily_unadjusted",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T03:47:27.103988+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3341,
+          "coverage": {
+            "日期": {
+              "start": "2013-01-28",
+              "end": "2026-11-03",
+              "dated_rows": 3341
+            }
+          },
+          "sha256": "49f4604ae169c0f8536726a3a74e20cb2d2239ca600a9edc86354f8a49974e64"
+        }
+      ]
+    },
+    {
+      "key": "etf_511990_splits",
+      "source_url": "https://fundf10.eastmoney.com/fhsp_511990.html",
+      "retrieved_at": "2026-11-03T03:47:23.418777+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 1,
+          "coverage": {
+            "拆分折算日": {
+              "start": "2012-12-27",
+              "end": "2012-12-27",
+              "dated_rows": 1
+            }
+          },
+          "sha256": "b848e7974c727efe381ecc1181dc35aaeacf18c5ce1312faf55feeff3d41d2cd"
+        }
+      ]
+    },
+    {
+      "key": "etf_563020_cumulative_dividends",
+      "source_url": "https://finance.sina.com.cn/realstock/company/sh563020/hfq.js",
+      "retrieved_at": "2026-11-03T03:47:09.657183+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 10,
+          "coverage": {
+            "日期": {
+              "start": "2024-06-17",
+              "end": "2026-09-11",
+              "dated_rows": 10
+            }
+          },
+          "sha256": "dc7dc85131ef5bf5cabe8405700194aed1ea633fbe20582de60a7696b0a840b2"
+        }
+      ]
+    },
+    {
+      "key": "etf_563020_daily_unadjusted",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T03:48:55.259771+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 697,
+          "coverage": {
+            "日期": {
+              "start": "2023-12-14",
+              "end": "2026-11-03",
+              "dated_rows": 697
+            }
+          },
+          "sha256": "ec7293521f3a8767cfad38250780aa5804a6e4a3c97010ce6494c6474c234402"
+        }
+      ]
+    },
+    {
+      "key": "etf_563020_dividends",
+      "source_url": "https://fundf10.eastmoney.com/fhsp_563020.html",
+      "retrieved_at": "2026-11-03T03:47:06.409552+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 10,
+          "coverage": {
+            "除息日": {
+              "start": "2024-06-17",
+              "end": "2026-09-11",
+              "dated_rows": 10
+            },
+            "权益登记日": {
+              "start": "2024-06-14",
+              "end": "2026-09-10",
+              "dated_rows": 10
+            },
+            "分红发放日": {
+              "start": "2024-06-20",
+              "end": "2026-09-16",
+              "dated_rows": 10
+            }
+          },
+          "sha256": "47abb7d949c760756697571fa3228495ccd6a9e81583a43b37bd1ea5c9c12772"
+        }
+      ]
+    },
+    {
+      "key": "index_399006_em",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T04:22:22.255392+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3987,
+          "coverage": {
+            "date": {
+              "start": "2010-06-01",
+              "end": "2026-11-03",
+              "dated_rows": 3987
+            }
+          },
+          "sha256": "1bdc7dc49a3ec4826196937c2e4570ccc7cb0b67b95b4972a606446fa74e8ab2"
+        }
+      ]
+    },
+    {
+      "key": "index_399006_sina",
+      "source_url": "https://finance.sina.com.cn/realstock/company/sz399006/hisdata/klc_kl.js",
+      "retrieved_at": "2026-11-03T03:48:54.216155+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3986,
+          "coverage": {
+            "date": {
+              "start": "2010-06-01",
+              "end": "2026-11-02",
+              "dated_rows": 3986
+            }
+          },
+          "sha256": "ef13f193765074ebc4ef77c686a7d1fdebef00ccfa9ce4d17fce706e35311ed1"
+        }
+      ]
+    },
+    {
+      "key": "index_930897_csindex",
+      "source_url": "https://www.csindex.com.cn/csindex-home/perf/index-perf",
+      "retrieved_at": "2026-11-03T03:57:31.447849+00:00",
+      "is_official": true,
+      "artifacts": [
+        {
+          "rows": 4572,
+          "coverage": {
+            "日期": {
+              "start": "2007-12-31",
+              "end": "2026-10-30",
+              "dated_rows": 4572
+            }
+          },
+          "sha256": "b8f0bba47a64a4f46b36d3be4e306576bbee28c8f75c8545e666e70ef3c07a0f"
+        }
+      ]
+    },
+    {
+      "key": "index_H00300_csindex",
+      "source_url": "https://www.csindex.com.cn/csindex-home/perf/index-perf",
+      "retrieved_at": "2026-11-03T03:49:51.257339+00:00",
+      "is_official": true,
+      "artifacts": [
+        {
+          "rows": 5303,
+          "coverage": {
+            "日期": {
+              "start": "1990-01-01",
+              "end": "2026-11-02",
+              "dated_rows": 5303
+            }
+          },
+          "sha256": "3b23965dd0d127a9e837f35d9688622a1d057ef81f894a31b5e5db729b0e3a59"
+        }
+      ]
+    },
+    {
+      "key": "index_H30269",
+      "source_url": "https://push2his.eastmoney.com/api/qt/stock/kline/get",
+      "retrieved_at": "2026-11-03T03:47:26.855822+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3128,
+          "coverage": {
+            "date": {
+              "start": "2013-12-19",
+              "end": "2026-11-03",
+              "dated_rows": 3128
+            }
+          },
+          "sha256": "ba9be0e64b47d25e69ae8f4fc5d2d43878f0739ab3a0b779dbc716187018f119"
+        }
+      ]
+    },
+    {
+      "key": "margin_account_info",
+      "source_url": "https://datacenter-web.eastmoney.com/api/data/v1/get",
+      "retrieved_at": "2026-11-03T03:49:17.938840+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 3419,
+          "coverage": {
+            "日期": {
+              "start": "2012-09-27",
+              "end": "2026-11-02",
+              "dated_rows": 3419
+            }
+          },
+          "sha256": "881955e76843cc6c57c6bfc58c937ccfe37d7930926b05b67075a09af018a948"
+        }
+      ]
+    },
+    {
+      "key": "margin_market_statistics",
+      "source_url": "https://datacenter-web.eastmoney.com/api/data/v1/get",
+      "retrieved_at": "2026-11-03T04:22:23.205515+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 4028,
+          "coverage": {
+            "TRADE_DATE": {
+              "start": "2010-03-31",
+              "end": "2026-11-02",
+              "dated_rows": 4028
+            }
+          },
+          "sha256": "ac1f9f47f62549a6edc197821cfe139545f52cbc19bc857cc64f4b54ef34d8c2"
+        }
+      ]
+    },
+    {
+      "key": "trade_calendar_sina",
+      "source_url": "https://finance.sina.com.cn/realstock/company/klc_td_sh.txt",
+      "retrieved_at": "2026-11-03T03:51:17.240060+00:00",
+      "is_official": false,
+      "artifacts": [
+        {
+          "rows": 8797,
+          "coverage": {
+            "trade_date": {
+              "start": "1990-12-19",
+              "end": "2026-12-31",
+              "dated_rows": 8797
+            }
+          },
+          "sha256": "172f3b5360876bb7cf1ce714da28124390690d25b002814c2c43fc971c434e2d"
+        }
+      ]
+    }
+  ],
+  "all_latest_good_snapshot_hashes_verified": true,
+  "verified_artifacts": 17,
+  "remaining_failed_tasks": {
+    "qvix": {
+      "status": "failed",
+      "error": "URLError",
+      "retrieved_at": "2026-11-03T03:57:52.261788+00:00"
+    },
+    "etf_159915_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:01.920198+00:00"
+    },
+    "etf_159915_cumulative_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:01.214490+00:00"
+    },
+    "etf_563020_splits": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:11.238692+00:00"
+    },
+    "etf_511360_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:13.474657+00:00"
+    },
+    "etf_511360_cumulative_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:15.498299+00:00"
+    },
+    "etf_511990_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:20.961891+00:00"
+    },
+    "etf_511990_cumulative_dividends": {
+      "status": "empty",
+      "error": null,
+      "retrieved_at": "2026-11-03T03:47:22.997765+00:00"
+    },
+    "index_H00300": {
+      "status": "failed",
+      "error": "TypeError",
+      "retrieved_at": "2026-11-03T03:47:30.975294+00:00"
+    }
+  }
+}
