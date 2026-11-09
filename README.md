@@ -30,6 +30,10 @@
 
 ## 当前开发进度
 
+负责人已于2026-11-09授权本阶段提交并同步至现有私有仓库；范围及历史证据的时点说明见[阶段同步记录](docs/development/git_delivery_20261109.md)。不公开仓库、不发布Release。
+
+2026-11-09 第三轮已接入模拟账户订单/成交/资产快照、确认后保存的每周裁决、历史周报与Markdown/CSV导出。实际Windows买卖与重启证据、数据限制、修改清单见[本轮交付](docs/development/usability_round3.md)，日常操作和增量数据库方案见[账户与每周闭环](docs/architecture/paper_weekly_workflow.md)。尚待人工验收，未提交或推送。
+
 - [x] Phase 0 环境检查与策略审计
 - [x] Phase 1 项目初始化（深色主题 GUI 空壳）
 - [x] Phase 2 数据引擎（数据源抽象 + AkShare/Sina + SQLite 缓存 + 周/月聚合）
@@ -76,6 +80,8 @@ python -m spear_shield            # 模块方式
 ```
 
 ## 运行测试
+
+当前阶段：**Phase 6.5 后续桌面实用化 / 完整策略仍PARTIAL**，冻结口径 `delegated-2026-11-03-v1`。2026-11-09完成ATR专项工程复核并交付六标的Dashboard、后台更新和日周月图表增量，最终非网络回归313通过。盘中日线、缺失指标和历史延迟明确显示，不代表完整策略已验收。启动与真实截图见[第一轮记录](docs/development/usability_round1.md)、[第二轮交付](docs/development/usability_round2.md)。原始资料版权及其他审计缺口保留，仓库可见性/历史未更改。
 
 ```bash
 python -m pytest --ignore=tests/integration/test_akshare_provider.py

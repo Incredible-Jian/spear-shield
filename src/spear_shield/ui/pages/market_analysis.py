@@ -7,6 +7,7 @@ from ..widgets import note, display
 from ...services.workspace import SYMBOLS
 from ...data.resample import resample_weekly, resample_monthly
 from ...indicators.engine import IndicatorEngine
+from ...services.market_view import chart_period_note
 
 
 class MarketAnalysisPage(BasePage):
@@ -43,6 +44,11 @@ class MarketAnalysisPage(BasePage):
         self.content_layout.addWidget(
             note(
                 "最近180根可缩放；指标预热不足保留空白。统计仅针对所选缓存样本，不是策略回测收益；末根周/月K可能未完结。"
+            )
+        )
+        self.content_layout.addWidget(
+            note(
+                "止损 / 止盈价位：UNKNOWN。本页不生成价位建议；已保存的历史裁决请在策略信号中心查看。"
             )
         )
         for w in (self.symbol, self.period, self.indicator):
@@ -91,13 +97,14 @@ class MarketAnalysisPage(BasePage):
             "建议待确认", f"模拟实际：{actual}", "策略受阻", "warn"
         )
         self.provenance.setText(
-            f"{code} · 前复权缓存 / 指数为点位 · {df.iloc[0].date} — {df.iloc[-1].date} · 来源：{', '.join(sorted(set(df.source)))} · 写入：{df.updated_at.max()} UTC"
+            f"{code} · 前复权缓存 / 指数为点位 · {df.iloc[0].date} — {df.iloc[-1].date} · 来源：{', '.join(sorted(set(df.source)))} · 写入：{df.updated_at.max()} UTC\n"
+            + chart_period_note(bars, period)
         )
         self.price.draw(
             out,
             title=f"{self.symbol.currentText()} · {self.period.currentText()}",
             candles=True,
-            lines=("ma10", "ma60", "boll_up", "boll_low"),
+            lines=("ma5", "ma10", "ma20", "ma60"),
         )
         lines = {
             "MACD": ("dif", "dea", "macd_hist"),

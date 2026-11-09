@@ -38,6 +38,9 @@ def main():
                     selection=request["selection"],
                     defense_weights=request["defense_weights"],
                     sources_root=request.get("research_sources"),
+                    journal_path=str(
+                        Path(sys.argv[1]).with_suffix(".execution.sqlite")
+                    ),
                 )
                 payload = {
                     "generated_at": datetime.now(timezone.utc).isoformat(),

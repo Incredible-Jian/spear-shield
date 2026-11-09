@@ -62,10 +62,19 @@ def initialize(session, initial):
     if session.get(PaperAccount, 1):
         raise ValueError("账户已初始化，不允许覆盖资金和记录")
     session.add(PaperAccount(id=1, initial=amount, cash=amount))
+    from .paper_execution import PaperAccountOrigin
+
+    session.add(
+        PaperAccountOrigin(
+            id=1,
+            observed_from=datetime.now(timezone.utc).isoformat(),
+            mode="NEW_SIMULATED_ACCOUNT",
+        )
+    )
     session.flush()
 
 
-def trade(session, code, side, quantity, price, fee=0):
+def trade(session, code, side, quantity, price, fee=0, *, recorded_at=None):
     if code not in ETFS or side not in ("buy", "sell"):
         raise ValueError("仅支持核心四只ETF的模拟买卖")
     if (
@@ -109,18 +118,18 @@ def trade(session, code, side, quantity, price, fee=0):
         account.cash = new_cash
         holding.quantity -= quantity
         holding.cost -= allocated
-    session.add(
-        PaperTrade(
-            time=datetime.now(timezone.utc).isoformat(),
-            code=code,
-            side=side,
-            quantity=quantity,
-            price=p,
-            fee=f,
-            realized=realized,
-        )
+    entry = PaperTrade(
+        time=(recorded_at or datetime.now(timezone.utc)).isoformat(),
+        code=code,
+        side=side,
+        quantity=quantity,
+        price=p,
+        fee=f,
+        realized=realized,
     )
+    session.add(entry)
     session.flush()
+    return entry.id
 
 
 def account_view(session, raw_quotes: dict):
@@ -142,6 +151,8 @@ def account_view(session, raw_quotes: dict):
                 "quantity": holding.quantity,
                 "cost": holding.cost / SCALE,
                 "average": holding.cost / holding.quantity / SCALE,
+                "price": quote["price"] if quote else None,
+                "source": quote.get("source", "未记录") if quote else "UNKNOWN",
                 "value": value / SCALE if value is not None else None,
                 "pnl": (value - holding.cost) / SCALE if value is not None else None,
                 "quote_date": quote["date"] if quote else "原始价缺失",

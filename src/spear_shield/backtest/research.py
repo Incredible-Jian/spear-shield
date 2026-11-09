@@ -75,6 +75,7 @@ def run_benchmarks(
     defense_weights=None,
     calendar=None,
     sources_root=None,
+    journal_path=None,
 ):
     if config.mode != "qfq_research":
         raise ValueError(
@@ -119,7 +120,9 @@ def run_benchmarks(
             }
             if any(df.empty for df in frames.values()):
                 raise ValueError("四只核心ETF前复权执行行情必须齐备")
-            result = StrategyReplay(dataset, frames).run(config)
+            result = StrategyReplay(dataset, frames).run(
+                config, journal_path=journal_path
+            )
             output.append(
                 {
                     "name": result.metadata["name"],
@@ -218,6 +221,8 @@ def run_benchmarks(
 
 
 def result_payload(result):
+    from .lineage import build_lineage
+
     def records(frame):
         return [
             {k: (v.isoformat() if hasattr(v, "isoformat") else v) for k, v in r.items()}
@@ -231,5 +236,5 @@ def result_payload(result):
         "orders": result.orders,
         "signals": result.signals,
         "metrics": result.metrics,
-        "metadata": result.metadata,
+        "metadata": {**result.metadata, "phase65_audit": build_lineage(result)},
     }

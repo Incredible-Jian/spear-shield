@@ -7,6 +7,8 @@ from datetime import date, datetime
 from math import isfinite
 from typing import Mapping
 from types import MappingProxyType
+import hashlib
+import json
 
 import pandas as pd
 
@@ -102,6 +104,7 @@ class Target:
     weights: Mapping[str, float]
     reason: str
     available_at: datetime
+    target_id: str = ""
 
     def __post_init__(self):
         object.__setattr__(self, "weights", MappingProxyType(dict(self.weights)))
@@ -119,6 +122,22 @@ class Target:
             or sum(self.weights.values()) > 1 + 1e-12
         ):
             raise ValueError("仅限核心ETF，权重和不得超过100%")
+        if not self.target_id:
+            identity = [
+                self.signal_at.isoformat(),
+                self.available_at.isoformat(),
+                self.reason,
+                dict(self.weights),
+            ]
+            object.__setattr__(
+                self,
+                "target_id",
+                hashlib.sha256(
+                    json.dumps(identity, sort_keys=True).encode()
+                ).hexdigest(),
+            )
+        if not isinstance(self.target_id, str) or not self.target_id.strip():
+            raise ValueError("target_id须为非空字符串")
 
 
 @dataclass(frozen=True)

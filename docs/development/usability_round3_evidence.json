@@ -1,0 +1,134 @@
+{
+  "head": "5aa322defdbc7fa10f121a39acb92e3bb0950ddb",
+  "branch": "main",
+  "baseline_modified": [
+    "src/spear_shield/database/engine.py",
+    "src/spear_shield/portfolio/paper_account.py",
+    "src/spear_shield/ui/controller.py",
+    "src/spear_shield/ui/pages/account.py",
+    "src/spear_shield/ui/pages/signal_center.py",
+    "src/spear_shield/ui/pages/thermometer.py",
+    "src/spear_shield/ui/pages/weekly_report.py",
+    "docs/development/progress_round3.md"
+  ],
+  "baseline_missing": [],
+  "strategy_backtest_and_original_tests_unchanged": true,
+  "deterministic_tests": {
+    "tests": 331,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "network_tests": [
+    {
+      "test": "test_fetch_etf_daily",
+      "result": "PASSED"
+    },
+    {
+      "test": "test_fetch_index_daily",
+      "result": "TIMEOUT_45S"
+    },
+    {
+      "test": "test_fetch_margin",
+      "result": "PASSED"
+    }
+  ],
+  "simulated_only": true,
+  "source": {
+    "basis": "原始行情",
+    "change_pct": 0.0070081995935167285,
+    "code": "511360",
+    "complete": false,
+    "completion": "未完成日线 / 待收盘后更新",
+    "date": "2026-11-09",
+    "issues": [],
+    "name": "短融ETF",
+    "price": 114.16,
+    "quality": "TRUE / 样本校验通过",
+    "source": "akshare",
+    "updated": "2026-11-09 15:19:42 CST"
+  },
+  "fills": [
+    {
+      "order_id": "144d8e0d8d174e71a588489b55c46568",
+      "fill_id": "e718fa0ae399987e875b97d72b0b2c6789a66e52bbdbcef037df9d9a64f19ff0",
+      "trade_id": 1,
+      "model_time": "2026-11-09T07:23:55.844649+00:00",
+      "side": "buy",
+      "quantity": 40,
+      "reference": 114.16,
+      "model_price": 114.2171,
+      "fee": 1.3706,
+      "slippage": 2.284
+    },
+    {
+      "order_id": "144d8e0d8d174e71a588489b55c46568",
+      "fill_id": "0fbfd51cb78ad2e9754bcaa3465d37715776b50f168199212344f5ae5e78504d",
+      "trade_id": 2,
+      "model_time": "2026-11-09T07:23:56.456322+00:00",
+      "side": "buy",
+      "quantity": 60,
+      "reference": 114.16,
+      "model_price": 114.2171,
+      "fee": 2.0559,
+      "slippage": 3.426
+    },
+    {
+      "order_id": "9099f817fd4d4fce86c232ceb92c1383",
+      "fill_id": "c2050118ef0bfd5601a5f8cb29de81e070ff9921e19a31b3861c413ea804ed17",
+      "trade_id": 3,
+      "model_time": "2026-11-09T07:23:57.110175+00:00",
+      "side": "sell",
+      "quantity": 100,
+      "reference": 114.16,
+      "model_price": 114.1029,
+      "fee": 3.4231,
+      "slippage": 5.71
+    }
+  ],
+  "initial": 100000.0,
+  "final_equity": 99981.7304,
+  "fees": 6.8496,
+  "slippage": 11.42,
+  "cash_positions_trades_equal_after_restart": true,
+  "native_stages": [
+    "GUI_PARTIAL_BUY_RETRY_SELL_OK",
+    "WEEKLY_DRAFT_USER_CONFIRM_SNAPSHOT_OK",
+    "IMMUTABLE_REPORT_MD_CSV_XLSX_OK",
+    "RESTART_ACCOUNT_ORDERS_FILLS_SNAPSHOT_REPORT_IDENTICAL",
+    "WEEKLY_DRAFT_USER_CONFIRM_SNAPSHOT_OK",
+    "IMMUTABLE_REPORT_MD_CSV_XLSX_OK",
+    "RESTART_ACCOUNT_ORDERS_FILLS_SNAPSHOT_REPORT_IDENTICAL",
+    "RESTART_ACCOUNT_ORDERS_FILLS_SNAPSHOT_REPORT_IDENTICAL"
+  ],
+  "decision_id": "905d4c80256e4a95b9c8baac28107da9",
+  "decision_digest": "48196c7670b5a796bb354b47c0441e42f248171a19b4f33f4272d450bfefa30d",
+  "unknown_count": 29,
+  "week_complete": false,
+  "month_complete": false,
+  "export_sha256": {
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/weekly_report.md": "8c9f84d98271f19425bb7a61bb5ae497fb67baf2b52b0ab0288187cb80954955",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/weekly_report.xlsx": "e1418e27cf131beb386f1bf1e842108ad238dea770f181242e58440399500faa",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/conditions.csv": "2d60195d6434d5b03c48a1ffdcce601950713754f42ae51482e1812b99360821",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/equity.csv": "411292bd08b5a9a85468c546dd0a86bc50ffe3972f609611c1b309fa6ca56776",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/fills.csv": "0b67f66280f1e8a6700a82ea3d3d180b56a6aa43a3d94ffd3902663b9f6fb018",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/holdings.csv": "f01a374e9c81e3db89b3a42940c4d6a5447684986a1296e42bf13f196eed6295",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/macro.csv": "8cee3662177b0a9c4befd183e4a285039e6494edfd575b8dc5ef8a8de4454054",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/market.csv": "585e27d4844bcec486a48c24dc70c82b66bf71e192fd2f0a58a679da04b56abf",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/orders.csv": "03c1ca7d28aeb7d794b31cfcb8bae434d749734ab76fc43a220d14de35d1781a",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/report.md": "8c9f84d98271f19425bb7a61bb5ae497fb67baf2b52b0ab0288187cb80954955",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/risk.csv": "2ea2ae67b90d85b9d17b71ddc69747a9773b1e496086e3db55f5a2bc5e056342",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/snapshot_identity.json": "153d8b42ad73717192e8ffa68c0dc234fbe3ab4313dd1297fdfb5466bd54ab3d",
+    "releases/research-round3/905d4c80256e4a95b9c8baac28107da9/csv/unknown.csv": "c2ca59f90b56321e227847656f6012e9e5a58498257301e28a1b59af60bb8dc1"
+  },
+  "csv_row_counts": {
+    "market": 6,
+    "orders": 2,
+    "fills": 3,
+    "equity": 4,
+    "conditions": 122
+  },
+  "staged_files": [],
+  "git_diff_check": 0,
+  "export_ignored": true
+}

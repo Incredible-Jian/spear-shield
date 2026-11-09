@@ -53,6 +53,8 @@ config/secrets.*
 releases/*.exe
 releases/*.zip
 releases/*.tar.gz
+# 本地模拟账户周报可能包含个人研究记录，验收导出不进入版本控制。
+/releases/research-round3/
 
 # ===== IDE / 编辑器 =====
 .vscode/*
@@ -66,3 +68,7 @@ releases/*.tar.gz
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 原始第三方策略资料不加入今后新提交；已跟踪文件/历史须另行经授权处理。
+/docs/source/*.pdf
+/docs/source/strategy_v7.3_extracted.txt

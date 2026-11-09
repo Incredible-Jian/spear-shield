@@ -81,7 +81,7 @@ class DataManagementPage(BasePage):
         self.timer.timeout.connect(self.fetch)
         self.update.clicked.connect(self.fetch)
         if controller:
-            self.cancel.clicked.connect(lambda: controller.job.cancel())
+            self.cancel.clicked.connect(controller.cancel_updates)
             controller.job.busy_changed.connect(self.busy_changed)
             controller.message.connect(self.feedback.setText)
         self.import_button.clicked.connect(self.import_file)

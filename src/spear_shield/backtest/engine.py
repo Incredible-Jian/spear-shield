@@ -110,6 +110,33 @@ def validate_market(data: MarketData, config: BacktestConfig):
 class BacktestEngine:
     def run(
         self,
+        data,
+        config,
+        targets=(),
+        *,
+        on_close=None,
+        on_execution=None,
+        stop_provider=None,
+        journal_path=None,
+    ):
+        from .execution_journal import ExecutionJournal
+
+        journal = ExecutionJournal(journal_path)
+        try:
+            return self._run(
+                data,
+                config,
+                targets,
+                on_close=on_close,
+                on_execution=on_execution,
+                stop_provider=stop_provider,
+                journal=journal,
+            )
+        finally:
+            journal.close()
+
+    def _run(
+        self,
         data: MarketData,
         config: BacktestConfig,
         targets=(),
@@ -117,6 +144,7 @@ class BacktestEngine:
         on_close=None,
         on_execution=None,
         stop_provider=None,
+        journal=None,
     ):
         """on_close只接收截至当日的副本；返回Target或None，可独立注入策略。
 
@@ -136,6 +164,25 @@ class BacktestEngine:
         按日low严格小于trigger触发；这是日OHLC预置止损模型，无分钟时点。
         """
         sessions, bars = validate_market(data, config)
+        from dataclasses import asdict
+        from .execution_journal import identifier, ATR_TARGET_POLICY_VERSION
+
+        journal.append(
+            "binding",
+            "inputs",
+            {
+                "config": asdict(config),
+                "execution_policy": ATR_TARGET_POLICY_VERSION,
+                "calendar": asdict(data.calendar),
+                "actions": [asdict(a) for a in data.actions],
+                "bars_sha256": identifier(
+                    {
+                        s: df.to_json(orient="split", date_format="iso")
+                        for s, df in bars.items()
+                    }
+                ),
+            },
+        )
         schedule = sorted(targets, key=lambda t: t.signal_at)
         if len({t.signal_at for t in schedule}) != len(schedule):
             raise ValueError("同一时点存在冲突目标")
@@ -155,6 +202,9 @@ class BacktestEngine:
         pending = None
         cursor = 0
         target_fills = {}
+        stop_progress = {}
+        target_states = {}
+        confirmed_events = []
 
         def state(prices=None):
             opens = {s: float(bars[s].loc[day, "open"]) for s in bars}
@@ -177,6 +227,30 @@ class BacktestEngine:
             prices=None,
             deferred=(),
         ):
+            audit_key = identifier(
+                [
+                    event,
+                    day.isoformat(),
+                    target.target_id if target else None,
+                    stop.known_at.isoformat() if stop else None,
+                    stop.reason if stop else None,
+                    status,
+                ]
+            )
+            journal.append(
+                "receipt",
+                audit_key,
+                {
+                    "date": day.isoformat(),
+                    "type": event,
+                    "status": status,
+                    "completed": completed,
+                    "target_id": target.target_id if target else None,
+                    "trades": list(fills),
+                    "quantities": dict(qty),
+                    "cash": cash,
+                },
+            )
             if on_execution is not None:
                 snapshot = state(prices)
                 on_execution(
@@ -184,6 +258,12 @@ class BacktestEngine:
                         "type": event,
                         "event": event,
                         "target": target,
+                        "target_id": target.target_id if target else None,
+                        "target_state": (
+                            deepcopy(target_states.get(target.target_id))
+                            if target
+                            else None
+                        ),
                         "stop": stop,
                         "date": day,
                         "day": day,
@@ -236,11 +316,33 @@ class BacktestEngine:
                     "available_at": target.available_at.isoformat(),
                     "weights": dict(target.weights),
                     "reason": target.reason,
+                    "target_id": target.target_id,
                 }
             )
 
         def enqueue(target, day):
             nonlocal pending
+            journal.register(target)
+            if journal.cancelled(
+                target.target_id, datetime.combine(day, time(0), SH).isoformat()
+            ):
+                # On restart an old ID cannot be reactivated; replay before its
+                # invalidation phase remains possible to reconstruct actual fills.
+                return
+            if (
+                any(
+                    target.signal_at < datetime.fromisoformat(e["invalidation_time"])
+                    for e in confirmed_events
+                )
+                and target.weights.get("159915", 0) > 0
+            ):
+                raise ValueError("ATR后重新入场必须提供新的时点和新的策略裁决")
+            if target.target_id in target_states:
+                return  # duplicate delivery is not a new target or trade
+            target_states[target.target_id] = {
+                "target_id": target.target_id,
+                "target_status": "pending",
+            }
             record(target)
             if pending:
                 if pending.signal_at == target.signal_at:
@@ -255,9 +357,194 @@ class BacktestEngine:
                     }
                 )
                 receipt("target", older, "superseded", True)
+                target_states[older.target_id]["target_status"] = "superseded"
                 if pending.signal_at > target.signal_at:
                     return
             pending = target
+
+        def invalidate_target(stop, event_id, stop_order_id, phase):
+            nonlocal pending
+            if pending is None or pending.weights.get("159915", 0) <= 0:
+                return
+            target = pending
+            opens = {s: float(bars[s].loc[day, "open"]) for s in bars}
+            equity = cash + due_value + sum(qty[s] * opens[s] for s in bars)
+            remaining = {}
+            for s in bars:
+                desired = (
+                    floor(
+                        (equity * target.weights.get(s, 0) / opens[s] + 1e-10)
+                        / config.lot_size
+                    )
+                    * config.lot_size
+                )
+                remaining[s] = {
+                    "buy": max(0.0, desired - qty[s]),
+                    "sell": max(0.0, qty[s] - desired),
+                }
+            executed = {
+                s: {
+                    side: sum(
+                        t["quantity"]
+                        for t in target_fills.get(target.signal_at, [])
+                        if t["symbol"] == s and t["side"] == side
+                    )
+                    for side in ("buy", "sell")
+                }
+                for s in bars
+            }
+            invalidation = {
+                "target_id": target.target_id,
+                "target_status": "cancelled_atr",
+                "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+                "invalidation_event_id": event_id,
+                "invalidation_time": datetime.combine(
+                    day, time(9, 30) if phase == "open_gap" else time(15, 30), SH
+                ).isoformat(),
+                "invalidation_phase": phase,
+                "time_precision": "model_phase_not_actual_intraday_timestamp",
+                "cancelled_remaining_quantity": remaining,
+                "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+                "cancelled_target_weights": dict(target.weights),
+                "executed_quantity": executed,
+                "related_stop_order_id": stop_order_id,
+            }
+            journal.append("cancel", target.target_id, invalidation)
+            target_states[target.target_id] = invalidation
+            pending = (
+                None  # revoke before stop order/fills/callbacks; never liquidate here
+            )
+            orders.append(
+                {
+                    "date": day.isoformat(),
+                    "signal_at": target.signal_at.isoformat(),
+                    "reason": target.reason,
+                    "status": "cancelled_atr",
+                    **invalidation,
+                }
+            )
+            receipt("target", target, "cancelled_atr", False)
+
+        def execute_stop(stop, phase):
+            s = stop.symbol
+            bar = bars[s].loc[day]
+            fills = []
+            status = "not_triggered"
+            event_id = identifier(["ATR", s, stop.known_at.isoformat(), stop.reason])
+            stop_order_id = identifier([event_id, day.isoformat()])
+            if (
+                event_id in stop_progress
+                and stop_progress[event_id]["executed"]
+                >= stop_progress[event_id]["requested"]
+                > 0
+            ):
+                orders.append(
+                    {
+                        "date": day.isoformat(),
+                        "symbol": s,
+                        "status": "already_executed",
+                        "reason": stop.reason,
+                        "execution_model": "daily_ohlc_preset_stop",
+                        "stop_event_id": event_id,
+                        "stop_order_id": stop_order_id,
+                    }
+                )
+                receipt("stop", None, "already_executed", True, (), stop)
+                return
+            if bar["suspended"]:
+                status = "deferred_suspension"
+            elif float(bar["low"]) < stop.trigger_price:
+                trigger_time = datetime.combine(
+                    day, time(9, 30) if phase == "open_gap" else time(15, 30), SH
+                ).isoformat()
+                event = {
+                    "event_id": event_id,
+                    "stop_order_id": stop_order_id,
+                    "invalidation_time": trigger_time,
+                    "phase": phase,
+                    "trigger_price": stop.trigger_price,
+                    "known_at": stop.known_at.isoformat(),
+                }
+                confirmed_events.append(event)
+                journal.append("stop_confirmation", stop_order_id, event)
+                invalidate_target(stop, event_id, stop_order_id, phase)
+                if event_id not in stop_progress:
+                    requested = (
+                        qty[s]
+                        if stop.fraction == 1
+                        else floor((qty[s] * stop.fraction + 1e-10) / config.lot_size)
+                        * config.lot_size
+                    )
+                    if requested > 0:
+                        stop_progress[event_id] = {
+                            "requested": requested,
+                            "executed": 0.0,
+                        }
+                progress = stop_progress.get(
+                    event_id, {"requested": 0.0, "executed": 0.0}
+                )
+                amount = max(0.0, progress["requested"] - progress["executed"])
+                journal.append(
+                    "stop_submission",
+                    stop_order_id,
+                    {
+                        "stop_order_id": stop_order_id,
+                        "event_id": event_id,
+                        "model_date": day.isoformat(),
+                        "phase": phase,
+                        "order_state": (
+                            "submitted" if amount > 0 else "no_sellable_intent"
+                        ),
+                        "requested_remaining_quantity": amount,
+                    },
+                )
+                status = "completed_with_cash_and_lot_constraints"
+                if amount <= 1e-9:
+                    status = (
+                        "already_executed" if progress["requested"] else "no_position"
+                    )
+                elif amount > sellable(s) + 1e-9:
+                    amount = floor(sellable(s) / config.lot_size) * config.lot_size
+                    status = "deferred_t_plus_one"
+                if amount > 1e-9:
+                    reference = min(float(bar["open"]), stop.trigger_price)
+                    fill = sell(
+                        s,
+                        amount,
+                        reference * (1 - config.slippage),
+                        reference,
+                        stop.reason,
+                        stop.known_at.isoformat(),
+                    )
+                    fill.update(
+                        execution_model="daily_ohlc_preset_stop",
+                        stop_event_id=event_id,
+                        stop_order_id=stop_order_id,
+                    )
+                    trades.append(fill)
+                    fills.append(fill)
+                    progress["executed"] += amount
+            orders.append(
+                {
+                    "date": day.isoformat(),
+                    "symbol": s,
+                    "status": status,
+                    "reason": stop.reason,
+                    "execution_model": "daily_ohlc_preset_stop",
+                    "stop_event_id": event_id,
+                    "stop_order_id": stop_order_id,
+                }
+            )
+            for fill in fills:
+                execution_prices[fill["symbol"]] = fill["price"]
+            receipt(
+                "stop",
+                None,
+                status,
+                status not in {"deferred_suspension", "deferred_t_plus_one"},
+                fills,
+                stop,
+            )
 
         for day in sessions:
             execution_prices = {s: float(bars[s].loc[day, "open"]) for s in bars}
@@ -314,6 +601,13 @@ class BacktestEngine:
                         raise ValueError("止损known_at须严格早于当日开盘")
                     if stop.symbol not in bars:
                         raise ValueError("止损标的缺少行情")
+            gap_stop = (
+                stop is not None
+                and not bars[stop.symbol].loc[day, "suspended"]
+                and float(bars[stop.symbol].loc[day, "open"]) < stop.trigger_price
+            )
+            if gap_stop:
+                execute_stop(stop, "open_gap")
             if pending:
                 trade_start = len(trades)
                 order_start = len(orders)
@@ -356,6 +650,7 @@ class BacktestEngine:
                                     "symbol": s,
                                     "status": "deferred_suspension",
                                     "reason": pending.reason,
+                                    "target_id": pending.target_id,
                                 }
                             )
                             continue
@@ -384,6 +679,7 @@ class BacktestEngine:
                                     "symbol": s,
                                     "status": "deferred_t_plus_one",
                                     "reason": pending.reason,
+                                    "target_id": pending.target_id,
                                 }
                             )
                             if amount <= 1e-9:
@@ -425,6 +721,7 @@ class BacktestEngine:
                                 "realized_price_pnl": price_pnl,
                                 "dividend_pnl": dividend_pnl,
                                 "reason": pending.reason,
+                                "target_id": pending.target_id,
                             }
                         )
                 if cash < -1e-6:
@@ -439,12 +736,14 @@ class BacktestEngine:
                             else "completed_with_cash_and_lot_constraints"
                         ),
                         "reason": pending.reason,
+                        "target_id": pending.target_id,
                     }
                 )
                 fills = trades[trade_start:]
                 for fill in fills:
                     execution_prices[fill["symbol"]] = fill["price"]
                 target_fills.setdefault(pending.signal_at, []).extend(deepcopy(fills))
+                target_states[pending.target_id]["target_status"] = orders[-1]["status"]
                 receipt(
                     "target",
                     pending,
@@ -459,62 +758,8 @@ class BacktestEngine:
                 )
                 if not delayed:
                     pending = None
-            if stop is not None:
-                s = stop.symbol
-                bar = bars[s].loc[day]
-                fills = []
-                status = "not_triggered"
-                # 停牌即使输入low越线也不能成交；不推断触发分钟。
-                if bar["suspended"]:
-                    status = "deferred_suspension"
-                elif float(bar["low"]) < stop.trigger_price:
-                    requested = (
-                        qty[s]
-                        if stop.fraction == 1
-                        else (
-                            floor((qty[s] * stop.fraction + 1e-10) / config.lot_size)
-                            * config.lot_size
-                        )
-                    )
-                    amount = requested
-                    status = "completed_with_cash_and_lot_constraints"
-                    if amount > sellable(s) + 1e-9:
-                        amount = floor(sellable(s) / config.lot_size) * config.lot_size
-                        status = "deferred_t_plus_one"
-                    if amount > 1e-9:
-                        reference = min(float(bar["open"]), stop.trigger_price)
-                        fill = sell(
-                            s,
-                            amount,
-                            reference * (1 - config.slippage),
-                            reference,
-                            stop.reason,
-                            stop.known_at.isoformat(),
-                        )
-                        fill["execution_model"] = "daily_ohlc_preset_stop"
-                        trades.append(fill)
-                        fills.append(fill)
-                    elif not qty[s]:
-                        status = "no_position"
-                orders.append(
-                    {
-                        "date": day.isoformat(),
-                        "symbol": s,
-                        "status": status,
-                        "reason": stop.reason,
-                        "execution_model": "daily_ohlc_preset_stop",
-                    }
-                )
-                for fill in fills:
-                    execution_prices[fill["symbol"]] = fill["price"]
-                receipt(
-                    "stop",
-                    None,
-                    status,
-                    status not in {"deferred_suspension", "deferred_t_plus_one"},
-                    fills,
-                    stop,
-                )
+            if stop is not None and not gap_stop:
+                execute_stop(stop, "intraday_after_open")
             values = {s: qty[s] * float(bars[s].loc[day, "close"]) for s in bars}
             equity = cash + due_value + sum(values.values())
             row = {
@@ -546,6 +791,7 @@ class BacktestEngine:
                     "date": sessions[-1].isoformat(),
                     "status": "unfilled_end",
                     "reason": pending.reason,
+                    "target_id": pending.target_id,
                 }
             )
             receipt("target", pending, "unfilled_end", False)
@@ -587,6 +833,14 @@ class BacktestEngine:
             signals,
             performance(frame, trades, config.initial_cash),
             {
+                "target_states": list(target_states.values()),
+                "atr_target_policy_version": ATR_TARGET_POLICY_VERSION,
+                "stop_events": confirmed_events,
+                "execution_journal": {
+                    "restart": "deterministic_replay_bound_inputs",
+                    "durable": journal.db.execute("PRAGMA database_list").fetchone()[2]
+                    != "",
+                },
                 "mode": config.mode,
                 "calendar_source": data.calendar.source,
                 "calendar_complete_declared": data.calendar.complete,

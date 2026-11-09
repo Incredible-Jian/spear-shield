@@ -1,0 +1,3114 @@
+{
+  "schema_version": "1.0",
+  "audit_date": "2026-11-03",
+  "baseline": {
+    "head": "5aa322defdbc7fa10f121a39acb92e3bb0950ddb",
+    "clean_at_start": true,
+    "verification": "主执行者在任何修改前实际核查git status/log；独立审阅者只静态审阅"
+  },
+  "scope": "33项冻结定义的静态逐项映射，附主执行者最终实际回归；局部断言不等于完整算法验收",
+  "precedence": "operational_definitions.md最终第6节优先；未明确替换的细项用其余对应节；冲突保留披露不改口径",
+  "method": {
+    "read_actual_implementation_and_tests": true,
+    "git_used": true,
+    "network_used": false,
+    "runtime_tests_executed": true,
+    "test_count_unit": "去重测试函数；参数化函数不展开用例数，不继承旧275 passed",
+    "direct_definition": "测试中有针对本项算法、条件消费、状态或拒绝分支的断言；局部直接不等于完整覆盖；assertion_scope说明层级",
+    "indirect_definition": "只经由相关链调用或注入fixture；断言不验证本项定义算法/仲裁分支",
+    "completion_definition": "完成为冻结算法静态落地，不要求测试全覆盖；部分完成为存在算法/范围/跨入口或状态缺口；未实现为无算法链；无法验证为只凭现有证据不能判算法落地",
+    "coordinator_runtime_tests_executed": true,
+    "reviewer_runtime_tests_executed": false,
+    "coordinator_bounded_network_tests_executed": true
+  },
+  "summary": {
+    "approval_count": 33,
+    "status_counts": {
+      "完成": 12,
+      "部分完成": 21,
+      "未实现": 0,
+      "无法验证": 0
+    },
+    "definitions_with_any_direct_assertion": 26,
+    "definitions_with_indirect_only": 5,
+    "definitions_with_no_identified_test": 2,
+    "unique_mapped_test_functions": 46,
+    "executed_tests": 284,
+    "policy_parameter_count": 29,
+    "parameters_without_literal_consumer": 9,
+    "execution_counts": {
+      "PASS": 283,
+      "FAIL": 0,
+      "SKIP": 0,
+      "XFAIL": 1
+    },
+    "unique_mapped_test_functions_executed": 46
+  },
+  "direct_definition_ids": [
+    "signal_series_definition",
+    "zscore_definition",
+    "retest_definition",
+    "bear_rally_high_definition",
+    "breakout_volume_definition",
+    "divergence_definition",
+    "above_ma30_definition",
+    "volume_baseline_definition",
+    "rsi_definition",
+    "pe_definition",
+    "iv_definition",
+    "margin_definition",
+    "margin_redline",
+    "bear_precondition_conflict",
+    "fast_bear_precedence",
+    "single_trade_risk_definition",
+    "catchup_definition",
+    "profit_drawdown_definition",
+    "restore_definition",
+    "entry_completion_definition",
+    "week_direction_definition",
+    "defense_fuse_definition",
+    "defense_transfer_definition",
+    "same_priority_definition",
+    "entry_precedence_definition",
+    "atr_drawdown_definition"
+  ],
+  "indirect_only_definition_ids": [
+    "effective_break_definition",
+    "bullish_definition",
+    "candle_definition",
+    "bottom_definition",
+    "margin_clear_definition"
+  ],
+  "uncovered_definition_ids": [
+    "stall_definition",
+    "double_top_definition"
+  ],
+  "excluded_approvals": [
+    {
+      "definition_id": "equity_bond_definition",
+      "reason": "分母/尺度未定，未批准，不计入33"
+    },
+    {
+      "definition_id": "equity_bond_extreme",
+      "reason": "极值未定，未批准，不计入33"
+    }
+  ],
+  "other_gaps": [
+    "第四档原文未定义，不新增approval/算法",
+    "PEG无独立approval及合格历史构造；七项PE与PEG合计一项，三值计数静态存在",
+    "不独立认证IV/PE/PEG/公司行动/历史真实发布版本，不继承旧报告的真实源数量或收益结论",
+    "GUI Controller.diagnose传空Snapshot/Position且省略policy，未使用33项授权；研究回放StrategyReplay使用operational_policy",
+    "账户周期/风险锁/峰值等缺跨进程恢复；旧state与回放生命周期不一致"
+  ],
+  "parameter_audit": [
+    {
+      "parameter": "margin_redline_pct",
+      "frozen_value": 2.3,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/macro.py",
+          "lines": [
+            57
+          ]
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            17
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "margin_clear_pct",
+      "frozen_value": 2.0,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            399
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "risk_budget_pct",
+      "frozen_value": 3.0,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "lines": [
+            419
+          ]
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            223
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "signal_symbol",
+      "frozen_value": "399006",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "style_dividend_symbol",
+      "frozen_value": "H30269",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "zscore_ddof",
+      "frozen_value": 0,
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "zscore_include_current",
+      "frozen_value": false,
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "zscore_window",
+      "frozen_value": 156,
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "iv_short_window",
+      "frozen_value": 252,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            378
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "iv_long_window",
+      "frozen_value": 756,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            379
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "iv_long_underlying",
+      "frozen_value": "沪深300股指",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "pe_window",
+      "frozen_value": 1260,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            380
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "volume_baseline_weeks",
+      "frozen_value": 13,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            136,
+            137
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "stall_return_abs_pct",
+      "frozen_value": 1.0,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "low_volume_ratio",
+      "frozen_value": 0.7,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "high_volume_ratio",
+      "frozen_value": 1.5,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            148
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "upper_shadow_fraction",
+      "frozen_value": 0.6,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            131
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "divergence_window",
+      "frozen_value": 26,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "lines": [
+            426
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "same_priority",
+      "frozen_value": "largest_reduction",
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/engine.py",
+          "lines": [
+            64
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "entry_precedence",
+      "frozen_value": [
+        "ENTRY_NUCLEAR",
+        "ENTRY_CATCHUP",
+        "ENTRY_BEAR",
+        "ENTRY_FIRST",
+        "ENTRY_FAST",
+        "ENTRY_SECOND",
+        "ENTRY_THIRD",
+        "P3_RESTORE"
+      ],
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/engine.py",
+          "lines": [
+            114
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "defense_transfer",
+      "frozen_value": "all_to_511360",
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/defense.py",
+          "lines": [
+            46
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "defense_scope",
+      "frozen_value": "only_when_attack_zero",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "negative_month_fast_cap",
+      "frozen_value": 0.2,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            268
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "profit_drawdown_basis",
+      "frozen_value": "peak",
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            167
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "atr_once_per_week",
+      "frozen_value": true,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            92
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "third_lock_scope",
+      "frozen_value": "entry_cycle",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "restore_limit_scope",
+      "frozen_value": "entry_cycle",
+      "read_outside_operational_policy": false,
+      "consumer_locations": []
+    },
+    {
+      "parameter": "risk_budget_method",
+      "frozen_value": "per_action",
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "lines": [
+            198,
+            213
+          ]
+        }
+      ]
+    },
+    {
+      "parameter": "risk_gap_stress_pct",
+      "frozen_value": 1.0,
+      "read_outside_operational_policy": true,
+      "consumer_locations": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "lines": [
+            304
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "definition_id": "signal_series_definition",
+      "name": "信号序列与指数/ETF分工",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          18,
+          21
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/inputs.py",
+        "src/spear_shield/services/research_dataset.py",
+        "src/spear_shield/backtest/strategy_replay.py"
+      ],
+      "function": [
+        "settled_bars",
+        "build_operational_snapshot",
+        "build_snapshot",
+        "load_operational_dataset",
+        "StrategyReplay._context"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "settled_bars",
+          "line": 17,
+          "end_line": 64,
+          "current_line": 17
+        },
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/inputs.py",
+          "function": "build_snapshot",
+          "line": 58,
+          "end_line": 107,
+          "current_line": 58
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "load_operational_dataset",
+          "line": 136,
+          "end_line": 223,
+          "current_line": 136
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_operational_features.py",
+        "tests/strategy/test_inputs_audit_defense.py"
+      ],
+      "test_case": [
+        "test_entire_missing_trading_week_is_preserved_and_indicator_rewarms",
+        "test_signal_basis_not_silently_selected",
+        "test_future_prices_do_not_change_current_snapshot"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_entire_missing_trading_week_is_preserved_and_indicator_rewarms",
+          "line": 71,
+          "coverage": "直接",
+          "assertion_scope": "缺掉有交易整周保留NaN并重新预热",
+          "execution": "PASS",
+          "current_line": 71
+        },
+        {
+          "test_file": "tests/strategy/test_inputs_audit_defense.py",
+          "test_case": "test_signal_basis_not_silently_selected",
+          "line": 83,
+          "coverage": "直接",
+          "assertion_scope": "旧builder缺approval拒绝；不验证固定399006",
+          "execution": "PASS",
+          "current_line": 83
+        },
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_future_prices_do_not_change_current_snapshot",
+          "line": 84,
+          "coverage": "直接",
+          "assertion_scope": "未来价格改变不影响当前已断言字段",
+          "execution": "PASS",
+          "current_line": 84
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "研究加载器固定399006/H30269，日历聚合已实现；signal_symbol/style_dividend_symbol配置未读。旧build_snapshot仍允许159915。回放bottom及横盘用ETF，见后项；输入缺身份/原生点位强校验，当前历史复权版本未认证。"
+    },
+    {
+      "definition_id": "zscore_definition",
+      "name": "156观测周Z，不含本周、ddof0",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          22
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/indicators/macro.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "style_zscore",
+        "ratio"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/indicators/macro.py",
+          "function": "style_zscore",
+          "line": 26,
+          "end_line": 39,
+          "current_line": 26
+        },
+        {
+          "file": "src/spear_shield/indicators/macro.py",
+          "function": "ratio",
+          "line": 18,
+          "end_line": 23,
+          "current_line": 18
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_macro.py",
+        "tests/strategy/test_operational_features.py"
+      ],
+      "test_case": [
+        "test_zscore_known_uniform_sequence_and_prefix",
+        "test_zscore_missing_zero_std_and_length",
+        "test_future_prices_do_not_change_current_snapshot"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_macro.py",
+          "test_case": "test_zscore_known_uniform_sequence_and_prefix",
+          "line": 12,
+          "coverage": "直接",
+          "assertion_scope": "工具手算156/不含当前/ddof0",
+          "execution": "PASS",
+          "current_line": 12
+        },
+        {
+          "test_file": "tests/strategy/test_macro.py",
+          "test_case": "test_zscore_missing_zero_std_and_length",
+          "line": 25,
+          "coverage": "直接",
+          "assertion_scope": "工具零方差/缺失",
+          "execution": "PASS",
+          "current_line": 25
+        },
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_future_prices_do_not_change_current_snapshot",
+          "line": 84,
+          "coverage": "间接",
+          "assertion_scope": "主builder仅比较前缀不变，未手算Z",
+          "execution": "PASS",
+          "current_line": 84
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "中",
+      "notes": "主builder硬编码156/shift(1)/ddof0，数值与冻结选择一致，但三项zscore配置未读，未调用已测试style_zscore。主builder直接相除未限制红利分母>0，工具ratio会拒绝非正分母；工具按自然连续周拒绝长假整周，而settled_bars不造无交易周。两套实现边界不一致。"
+    },
+    {
+      "definition_id": "effective_break_definition",
+      "name": "有效站上60周线",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          7
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_entry_boundaries_with_explicit_test_approvals"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_entry_boundaries_with_explicit_test_approvals",
+          "line": 111,
+          "coverage": "间接",
+          "assertion_scope": "规则层注入effective=True后验证斜率/量门槛；不验证站上算法",
+          "execution": "PASS",
+          "current_line": 111
+        }
+      ],
+      "test_coverage": "仅间接",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "effective_above_ma60只算当周C>MA60；§7的两周确认未被第6节另行明确替换，two_weeks_above_ma60另算两周且仅补投使用。只有一周站上的FIRST/BEAR可能提前通过。缺前周MA时two_weeks标False而非未知。"
+    },
+    {
+      "definition_id": "bullish_definition",
+      "name": "当周收阳",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          8
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_entry_boundaries_with_explicit_test_approvals"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_entry_boundaries_with_explicit_test_approvals",
+          "line": 111,
+          "coverage": "间接",
+          "assertion_scope": "手工注入bullish=True，未断言C与O的计算",
+          "execution": "PASS",
+          "current_line": 111
+        }
+      ],
+      "test_coverage": "仅间接",
+      "status": "完成",
+      "risk": "低",
+      "notes": "实际为C>O，等号False，与冻结口径一致。未发现针对阴线/平开平收及相对前收下跌阳线的生成器断言；完成仅指静态算法落地。"
+    },
+    {
+      "definition_id": "retest_definition",
+      "name": "回踩MA60与3%边界",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          9
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_second_and_third_additions_and_third_permanent_disable"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_second_and_third_additions_and_third_permanent_disable",
+          "line": 130,
+          "coverage": "直接",
+          "assertion_scope": "注入retest=True且偏离=3验证二档20%；未测OHLC生成",
+          "execution": "PASS",
+          "current_line": 130
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "中",
+      "notes": "低<=MA60×1.03、收>=MA60，规则偏离<=3已进入链；第6节明确的条件满足。§9前周收>前周MA60未实现，未见最终节明确撤销此条件；均线为0亦无本地防护，未覆盖生成器端点。"
+    },
+    {
+      "definition_id": "bear_rally_high_definition",
+      "name": "上一熊市段反弹高点",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          10
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_second_and_third_additions_and_third_permanent_disable"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_second_and_third_additions_and_third_permanent_disable",
+          "line": 130,
+          "coverage": "直接",
+          "assertion_scope": "第三档消费手工突破标志，未测段落识别",
+          "execution": "PASS",
+          "current_line": 130
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "采用最近已发生连续月斜率<=0映射周段的历史high最大值，第6节已授权该自动算法，不能再按§10旧稿称未批准。仅C>rally，未检查§10独立明确的前周<=阈值首次上穿；段中NaN由max跳过，缺失段可能被压缩；无直接形态生成测试。"
+    },
+    {
+      "definition_id": "breakout_volume_definition",
+      "name": "突破放量52周分位",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          10
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/indicators/volume.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "volume_percentile",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/indicators/volume.py",
+          "function": "volume_percentile",
+          "line": 22,
+          "end_line": 36,
+          "current_line": 22
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/unit/test_indicators.py",
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_volume_percentile_boundaries",
+        "test_second_and_third_additions_and_third_permanent_disable"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_volume_percentile_boundaries",
+          "line": 124,
+          "coverage": "直接",
+          "assertion_scope": "工具经验<=、含当前的小窗口手算",
+          "execution": "PASS",
+          "current_line": 124
+        },
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_second_and_third_additions_and_third_permanent_disable",
+          "line": 130,
+          "coverage": "直接",
+          "assertion_scope": "第三档消费手工volume_breakout=True",
+          "execution": "PASS",
+          "current_line": 130
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "量分位>=60，52周含当前由IndicatorEngine固定调用；无1.5倍暗加条件。放量标志仅在monthly非空分支生成，主链52周边界未直接断言；工具小窗测试不等于主链全覆盖。"
+    },
+    {
+      "definition_id": "candle_definition",
+      "name": "长上影",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          11
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_risk_boundaries.py"
+      ],
+      "test_case": [
+        "test_p2_dominates_p3_without_reduction_stacking"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_risk_boundaries.py",
+          "test_case": "test_p2_dominates_p3_without_reduction_stacking",
+          "line": 71,
+          "coverage": "间接",
+          "assertion_scope": "手工long_upper_shadow=True，仅验证优先级",
+          "execution": "PASS",
+          "current_line": 71
+        }
+      ],
+      "test_coverage": "仅间接",
+      "status": "完成",
+      "risk": "低",
+      "notes": "H-max(O,C)占振幅严格>0.60，读取upper_shadow_fraction；第6节优先于§11旧稿>=，不把严格边界报成偏差。无OHLC算法或恰60%直接测试。"
+    },
+    {
+      "definition_id": "stall_definition",
+      "name": "缩量/放量滞涨",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          11
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [],
+      "test_case": [],
+      "test_evidence": [],
+      "test_coverage": "未发现针对测试",
+      "status": "完成",
+      "risk": "中",
+      "notes": "此前13周均量、abs周收益<1%、缩量<0.7、放量>=1.5，参数均实际读取；第6节严格<覆盖§11旧稿<=。缺ret或均量无效不生成。未发现生成及边界直接测试，不能因fixture提供False而称覆盖。"
+    },
+    {
+      "definition_id": "divergence_definition",
+      "name": "26周两融顶背离",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          12
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_replay_regressions.py"
+      ],
+      "test_case": [
+        "test_divergence_uses_each_historical_week_publication_cutoff"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_divergence_uses_each_historical_week_publication_cutoff",
+          "line": 438,
+          "coverage": "直接",
+          "assertion_scope": "各历史周available_at截止/晚发布未知；未区分前高对应周与全窗最大值",
+          "execution": "PASS",
+          "current_line": 438
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "历史发布时间因果对齐已落地；实际C>=历史最高close，margin当前<历史margin最大值。§12要求C严格新高且与价格前高对应周j的margin比较、并列j取最近；第6节只覆盖时间对齐未替换此公式。价格等前高或两融峰不在价格峰时可误判。"
+    },
+    {
+      "definition_id": "double_top_definition",
+      "name": "自动双顶H2/颈线",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          13
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "double_top_features",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "double_top_features",
+          "line": 162,
+          "end_line": 189,
+          "current_line": 193
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [],
+      "test_case": [],
+      "test_evidence": [],
+      "test_coverage": "未发现针对测试",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "第6节已批准52周、首顶左右2根、第二顶当前候选、3%/5%；代码有这些结构。只校验末9周close，52周high/low缺失被max/min跳过；不足9周返回缺失，但局部完整时可把未完整形态证据写False。颈线由遍历最后候选覆盖，未测多候选/缺失/时序。规则当前量分位对当前第二顶相容，不将旧稿延迟确认警告直接报成现错。"
+    },
+    {
+      "definition_id": "bottom_definition",
+      "name": "本轮底部涨幅100%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          14,
+          21
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay._context",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_seven_of_five_does_not_count_unknown_as_true"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_seven_of_five_does_not_count_unknown_as_true",
+          "line": 71,
+          "coverage": "间接",
+          "assertion_scope": "手工rise_from_bottom_100=True验证三值计数",
+          "execution": "PASS",
+          "current_line": 71
+        }
+      ],
+      "test_coverage": "仅间接",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "实际用ETF159915本轮周low最小值×2比较ETF当前close；§14/21要求399006本轮完成周close最小值。资产与低点字段均不同，min亦可跳过NaN；第6节未改变该项定义。无生成器针对测试。"
+    },
+    {
+      "definition_id": "above_ma30_definition",
+      "name": "8周至少6周站MA30",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          14
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay.close",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.close",
+          "line": 307,
+          "end_line": 456,
+          "current_line": 351
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_seven_of_five_does_not_count_unknown_as_true"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_seven_of_five_does_not_count_unknown_as_true",
+          "line": 71,
+          "coverage": "直接",
+          "assertion_scope": "注入布尔后的七选五消费；未测8周生成",
+          "execution": "PASS",
+          "current_line": 71
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "回放使用399006，末8周各自close>ma30计数>=6，ma30须齐全。仅回放close注入，通用builder不生成；未发现恰6/恰MA30的生成测试。"
+    },
+    {
+      "definition_id": "volume_baseline_definition",
+      "name": "1.5倍量基准",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          11,
+          14
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "candle_features",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_seven_of_five_does_not_count_unknown_as_true"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_seven_of_five_does_not_count_unknown_as_true",
+          "line": 71,
+          "coverage": "直接",
+          "assertion_scope": "手工volume_1_5=True，直接验证其计一项",
+          "execution": "PASS",
+          "current_line": 71
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "shift(1).rolling(13)读取窗口，volume_1_5使用硬编码>=1.5；与冻结值一致，但不读high_volume_ratio（后者只用于high_volume_stall）。额外依赖ret有效才生成量能标志，尚无量基准/端点直接测试。"
+    },
+    {
+      "definition_id": "rsi_definition",
+      "name": "14周Wilder RSI",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          14
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/indicators/rsi.py",
+        "src/spear_shield/indicators/_common.py",
+        "src/spear_shield/indicators/engine.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "rsi",
+        "wilder_smooth",
+        "IndicatorEngine.compute",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/indicators/rsi.py",
+          "function": "rsi",
+          "line": 19,
+          "end_line": 45,
+          "current_line": 19
+        },
+        {
+          "file": "src/spear_shield/indicators/_common.py",
+          "function": "wilder_smooth",
+          "line": 13,
+          "end_line": 26,
+          "current_line": 13
+        },
+        {
+          "file": "src/spear_shield/indicators/engine.py",
+          "function": "IndicatorEngine.compute",
+          "line": 40,
+          "end_line": 96,
+          "current_line": 40
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/unit/test_indicators.py"
+      ],
+      "test_case": [
+        "test_rsi_rising",
+        "test_rsi_falling",
+        "test_rsi_flat",
+        "test_rsi_insufficient_length_is_nan"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_rsi_rising",
+          "line": 49,
+          "coverage": "直接",
+          "assertion_scope": "period3单边上涨100",
+          "execution": "PASS",
+          "current_line": 49
+        },
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_rsi_falling",
+          "line": 57,
+          "coverage": "直接",
+          "assertion_scope": "period3下跌0",
+          "execution": "PASS",
+          "current_line": 57
+        },
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_rsi_flat",
+          "line": 64,
+          "coverage": "直接",
+          "assertion_scope": "period3平盘50",
+          "execution": "PASS",
+          "current_line": 64
+        },
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_rsi_insufficient_length_is_nan",
+          "line": 72,
+          "coverage": "直接",
+          "assertion_scope": "period14历史不足",
+          "execution": "PASS",
+          "current_line": 72
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "周线传入RSI14，首14差种子、Wilder递推，规则严格>88。工具方向/预热有断言，无混合涨跌14周手算及88等号主链测试。"
+    },
+    {
+      "definition_id": "pe_definition",
+      "name": "399006 PE分位",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          6
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/indicators/macro.py",
+        "src/spear_shield/services/research_dataset.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "historical_percentile",
+        "load_operational_dataset",
+        "entry_rules",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/indicators/macro.py",
+          "function": "historical_percentile",
+          "line": 42,
+          "end_line": 54,
+          "current_line": 42
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "load_operational_dataset",
+          "line": 136,
+          "end_line": 223,
+          "current_line": 136
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_macro.py",
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_percentile_ties_and_explicit_window",
+        "test_second_and_third_additions_and_third_permanent_disable"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_macro.py",
+          "test_case": "test_percentile_ties_and_explicit_window",
+          "line": 52,
+          "coverage": "直接",
+          "assertion_scope": "通用分位小窗，并列<=/是否含当前",
+          "execution": "PASS",
+          "current_line": 52
+        },
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_second_and_third_additions_and_third_permanent_disable",
+          "line": 130,
+          "coverage": "直接",
+          "assertion_scope": "注入PE59.9消费；非PE历史验证",
+          "execution": "PASS",
+          "current_line": 130
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "1260窗口被读取且不含当前；真实加载器不接PE/PEG，外传pe缺指数身份、剔亏TTM方法、正值、交易日完整性验证。已发布行过滤后按行滚动可能压缩缺日；只有inferred_release_series路径补交易日。PEG未实现合格构造，仅消费任意peg数字，未覆盖披露。"
+    },
+    {
+      "definition_id": "iv_definition",
+      "name": "短252/长IO756 IV分位",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          4,
+          17
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/data/research_sources.py",
+        "src/spear_shield/services/research_dataset.py",
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "_fetch_task",
+        "load_operational_dataset",
+        "inferred_release_series",
+        "build_operational_snapshot",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/data/research_sources.py",
+          "function": "_fetch_task",
+          "line": 219,
+          "end_line": 328,
+          "current_line": 219
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "load_operational_dataset",
+          "line": 136,
+          "end_line": 223,
+          "current_line": 136
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "inferred_release_series",
+          "line": 83,
+          "end_line": 123,
+          "current_line": 83
+        },
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/unit/test_research_sources.py",
+        "tests/strategy/test_operational_features.py",
+        "tests/strategy/test_engine_workflow.py"
+      ],
+      "test_case": [
+        "test_qvix_raw_bytes_and_correct_index_columns",
+        "test_macro_future_publication_not_seen_and_iv_is_not_return_volatility",
+        "test_iv_strict_panic_boundaries"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/unit/test_research_sources.py",
+          "test_case": "test_qvix_raw_bytes_and_correct_index_columns",
+          "line": 118,
+          "coverage": "直接",
+          "assertion_scope": "模拟CSV原字节和CYB74/IO20列映射",
+          "execution": "PASS",
+          "current_line": 118
+        },
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_macro_future_publication_not_seen_and_iv_is_not_return_volatility",
+          "line": 107,
+          "coverage": "直接",
+          "assertion_scope": "未给IV时保持None",
+          "execution": "PASS",
+          "current_line": 107
+        },
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_iv_strict_panic_boundaries",
+          "line": 63,
+          "coverage": "直接",
+          "assertion_scope": "注入分位95/80不触发恐慌",
+          "execution": "PASS",
+          "current_line": 63
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "第6节批准算法而非真实序列，不沿用§3旧未批准说法。窗口实际读取，iv_long_underlying未读；加载器固定文件。已补本地交易日后不缩缺日，但通用builder外传宏观未校验日历/正值/方法或标的，可接受不合格序列。未独立复验本地真实源覆盖；文件记载HTTP/HTTPS失败只作历史说明，无本轮联网结论。"
+    },
+    {
+      "definition_id": "margin_definition",
+      "name": "两融发布方占比与范围",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          5
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/data/research_sources.py",
+        "src/spear_shield/services/research_dataset.py",
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "_fetch_task",
+        "load_operational_dataset",
+        "inferred_release_series",
+        "build_operational_snapshot",
+        "margin_entry_check",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/data/research_sources.py",
+          "function": "_fetch_task",
+          "line": 219,
+          "end_line": 328,
+          "current_line": 219
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "load_operational_dataset",
+          "line": 136,
+          "end_line": 223,
+          "current_line": 136
+        },
+        {
+          "file": "src/spear_shield/services/research_dataset.py",
+          "function": "inferred_release_series",
+          "line": 83,
+          "end_line": 123,
+          "current_line": 83
+        },
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "margin_entry_check",
+          "line": 16,
+          "end_line": 27,
+          "current_line": 16
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/unit/test_research_sources.py",
+        "tests/unit/test_research_dataset.py"
+      ],
+      "test_case": [
+        "test_publisher_margin_report_retains_percent_units_and_scope",
+        "test_lag_assumption_explicit_and_missing_trading_day_stays_nan"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/unit/test_research_sources.py",
+          "test_case": "test_publisher_margin_report_retains_percent_units_and_scope",
+          "line": 210,
+          "coverage": "直接",
+          "assertion_scope": "模拟发布方字段2.31、BOARD_CODE保留",
+          "execution": "PASS",
+          "current_line": 210
+        },
+        {
+          "test_file": "tests/unit/test_research_dataset.py",
+          "test_case": "test_lag_assumption_explicit_and_missing_trading_day_stays_nan",
+          "line": 37,
+          "coverage": "直接",
+          "assertion_scope": "下一交易日09:00假设、缺日NaN",
+          "execution": "PASS",
+          "current_line": 37
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "最终节明确改采发布方MARGIN_A_RATIO/MARGIN_A_TRADE，不能以未重建三所原始分母单独判违规。范围代码只聚合保存set，未逐观测绑定范围/变更；builder任意有限turnover即valid=True，未核口径、负值与范围，7天陈旧容忍可跨周。历史实际发布时间仍无法由研究延迟假设证明。"
+    },
+    {
+      "definition_id": "margin_redline",
+      "name": "两融红线2.3%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          23
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/rules.py",
+        "src/spear_shield/strategy/macro.py"
+      ],
+      "function": [
+        "margin_entry_check",
+        "thermometer"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "margin_entry_check",
+          "line": 16,
+          "end_line": 27,
+          "current_line": 16
+        },
+        {
+          "file": "src/spear_shield/strategy/macro.py",
+          "function": "thermometer",
+          "line": 21,
+          "end_line": 63,
+          "current_line": 21
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_engine_workflow.py"
+      ],
+      "test_case": [
+        "test_margin_redline_strict_boundary",
+        "test_unknown_redline_cannot_be_replaced_by_boolean"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_margin_redline_strict_boundary",
+          "line": 73,
+          "coverage": "直接",
+          "assertion_scope": "2.3允许、2.3001禁止",
+          "execution": "PASS",
+          "current_line": 73
+        },
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_unknown_redline_cannot_be_replaced_by_boolean",
+          "line": 78,
+          "coverage": "直接",
+          "assertion_scope": "无数值红线布尔不替代",
+          "execution": "PASS",
+          "current_line": 78
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "读取2.3且限制2.3—2.5合法；入场<=、红线>，P2另需背离，未变成P0。测试为明确夹具策略，不冒称真实数据验收。"
+    },
+    {
+      "definition_id": "margin_clear_definition",
+      "name": "两融出清0到2.0%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          23
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_engine_workflow.py"
+      ],
+      "test_case": [
+        "test_full_nuclear_requires_actual_four_dimensions"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_full_nuclear_requires_actual_four_dimensions",
+          "line": 45,
+          "coverage": "间接",
+          "assertion_scope": "手工margin_cleared=True参与核弹，未测数值生成",
+          "execution": "PASS",
+          "current_line": 45
+        }
+      ],
+      "test_coverage": "仅间接",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "读取margin_clear_pct，但生成式仅value<=2.0缺>=0；核弹另检margin>=0可阻断负值最终动作，仍会输出错误出清事实。无0/2.0/负数生成器测试。"
+    },
+    {
+      "definition_id": "bear_precondition_conflict",
+      "name": "熊市20%豁免正月线",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          24
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_fast_bear_and_catchup_paths"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_fast_bear_and_catchup_paths",
+          "line": 143,
+          "coverage": "直接",
+          "assertion_scope": "注入熊市许可，BEAR份额20%；旧fixture FAST50%是另一参数策略",
+          "execution": "PASS",
+          "current_line": 143
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "中",
+      "notes": "BEAR月<=0、周两斜率、有效站上/收阳/量能及风险滤网生效，固定20%。未发现月=0完整主链测试；有效站上算法缺口见对应项。"
+    },
+    {
+      "definition_id": "fast_bear_precedence",
+      "name": "快速熊市封顶20%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          24
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_operational_features.py"
+      ],
+      "test_case": [
+        "test_bear_fast_cap_is_20_not_50"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_bear_fast_cap_is_20_not_50",
+          "line": 148,
+          "coverage": "直接",
+          "assertion_scope": "负月线FAST action.fraction=0.2",
+          "execution": "PASS",
+          "current_line": 148
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "负/零已知月斜率读negative_month_fast_cap=.2，符合最终节（覆盖§24旧禁FAST）。但月斜率未知时走else=.5，FAST条件本身不要求月线已知，可能生成50%动作。该缺失分支与月=0未直接测试。"
+    },
+    {
+      "definition_id": "single_trade_risk_definition",
+      "name": "按动作增量核3%风险",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          26
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/rules.py",
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/backtest/engine.py"
+      ],
+      "function": [
+        "entry_rules",
+        "StrategyReplay._context",
+        "StrategyReplay.close",
+        "BacktestEngine.run"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.close",
+          "line": 307,
+          "end_line": 456,
+          "current_line": 351
+        },
+        {
+          "file": "src/spear_shield/backtest/engine.py",
+          "function": "BacktestEngine.run",
+          "line": 111,
+          "end_line": 616,
+          "current_line": 111
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_replay_regressions.py"
+      ],
+      "test_case": [
+        "test_each_entry_and_restore_checks_its_fraction_and_all_cost_buffers"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_each_entry_and_restore_checks_its_fraction_and_all_cost_buffers",
+          "line": 372,
+          "coverage": "直接",
+          "assertion_scope": "各动作份额×止损距离+双边成本/压力；缺buffer不通过",
+          "execution": "PASS",
+          "current_line": 372
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "规则与context真实计算，1个百分点压力有披露。close另有仅距离×份额的重复简化检查；次日开盘成交路径未重新核ETF MA60止损距离与3%预算，可因跳空突破计划预算。§6选择ETF MA60已覆盖旧指数映射疑问，不能再认定无止损定义；真实跳空损失非3%硬保证。"
+    },
+    {
+      "definition_id": "catchup_definition",
+      "name": "错失事件补投70%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          24
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/rules.py",
+        "src/spear_shield/strategy/engine.py"
+      ],
+      "function": [
+        "candle_features",
+        "entry_rules",
+        "StrategyEngine.evaluate"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "candle_features",
+          "line": 114,
+          "end_line": 159,
+          "current_line": 126
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        },
+        {
+          "file": "src/spear_shield/strategy/engine.py",
+          "function": "StrategyEngine.evaluate",
+          "line": 15,
+          "end_line": 134,
+          "current_line": 15
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_fast_bear_and_catchup_paths"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_fast_bear_and_catchup_paths",
+          "line": 143,
+          "coverage": "直接",
+          "assertion_scope": "注入错失/两周站稳后70%；未验证事件来源",
+          "execution": "PASS",
+          "current_line": 143
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "第6节允许CATCHUP优先FIRST。实际仅检查紧前一周收<=开、收>MA60、量>=60，未验证该周其他普通条件/当时风险；未持久化错失事件及有效期。当前两周站稳包含错失周，未实现§24所述其后两周；最终节未给明确替代观察长度。无事件级测试。"
+    },
+    {
+      "definition_id": "profit_drawdown_definition",
+      "name": "峰值浮盈武装与价格回撤8%",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          29
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay._context",
+        "StrategyReplay.execution",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.execution",
+          "line": 75,
+          "end_line": 208,
+          "current_line": 76
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_replay_regressions.py"
+      ],
+      "test_case": [
+        "test_peak_survives_buy_without_revaluing_old_peak_at_new_cost"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_peak_survives_buy_without_revaluing_old_peak_at_new_cost",
+          "line": 310,
+          "coverage": "直接",
+          "assertion_scope": "加仓保留已观察峰值浮盈，不用新成本回估；8%回撤True",
+          "execution": "PASS",
+          "current_line": 310
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "中",
+      "notes": "内存保存价格峰及观测峰值浮盈，全清重置，避免减仓制造净值回撤；规则peak_profit>100。无100/8%端点、减仓保峰与重启持久化直接测试；研究qfq单位已披露，真实公司行动/历史版本未认证，跨进程峰值无法恢复。"
+    },
+    {
+      "definition_id": "restore_definition",
+      "name": "MA10次周按实际份额补回",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          27,
+          30
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/portfolio/state.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay.execution",
+        "StrategyReplay._context",
+        "confirm_execution",
+        "entry_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.execution",
+          "line": 75,
+          "end_line": 208,
+          "current_line": 76
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/portfolio/state.py",
+          "function": "confirm_execution",
+          "line": 19,
+          "end_line": 69,
+          "current_line": 19
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "entry_rules",
+          "line": 185,
+          "end_line": 307,
+          "current_line": 185
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_replay_regressions.py",
+        "tests/strategy/test_engine_workflow.py"
+      ],
+      "test_case": [
+        "test_restore_budget_tracks_actual_sold_units_at_current_price",
+        "test_restore_exact_next_week_and_maximum_twice"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_restore_budget_tracks_actual_sold_units_at_current_price",
+          "line": 287,
+          "coverage": "直接",
+          "assertion_scope": "20单位随当前价110换算目标22%",
+          "execution": "PASS",
+          "current_line": 287
+        },
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_restore_exact_next_week_and_maximum_twice",
+          "line": 90,
+          "coverage": "直接",
+          "assertion_scope": "次周匹配、第二次后拒绝；规则/状态层",
+          "execution": "PASS",
+          "current_line": 90
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "回放按卖出单位换算，旧confirm_execution独用仍保存历史权重；跨周期reset只在回放首次入场实现，restore_limit_scope未读。规则补回缺月>0、周两斜率>=0.1及C>MA60显式检查，不能用P0/P1未触发代替。部分减仓未整单完成时未建立可补回单位。无生命周期持久化/重启测试。"
+    },
+    {
+      "definition_id": "entry_completion_definition",
+      "name": "部署完成与固定四周窗口",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          27,
+          32
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/portfolio/state.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay.execution",
+        "StrategyReplay._context",
+        "StrategyReplay.close",
+        "confirm_execution",
+        "observe_month",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.execution",
+          "line": 75,
+          "end_line": 208,
+          "current_line": 76
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.close",
+          "line": 307,
+          "end_line": 456,
+          "current_line": 351
+        },
+        {
+          "file": "src/spear_shield/portfolio/state.py",
+          "function": "confirm_execution",
+          "line": 19,
+          "end_line": 69,
+          "current_line": 19
+        },
+        {
+          "file": "src/spear_shield/portfolio/state.py",
+          "function": "observe_month",
+          "line": 11,
+          "end_line": 16,
+          "current_line": 11
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_replay_regressions.py",
+        "tests/strategy/test_rules.py"
+      ],
+      "test_case": [
+        "test_partial_fill_waits_for_completed_cumulative_receipt",
+        "test_first_four_week_window_closes_and_later_entry_does_not_reset",
+        "test_time_stop_manual_values_and_amplitude_boundary"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_partial_fill_waits_for_completed_cumulative_receipt",
+          "line": 236,
+          "coverage": "直接",
+          "assertion_scope": "整目标完成及累计进攻成交才确认、重复回执幂等",
+          "execution": "PASS",
+          "current_line": 236
+        },
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_first_four_week_window_closes_and_later_entry_does_not_reset",
+          "line": 336,
+          "coverage": "直接",
+          "assertion_scope": "首次四周失败也关闭，后续加仓不重置",
+          "execution": "PASS",
+          "current_line": 336
+        },
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_time_stop_manual_values_and_amplitude_boundary",
+          "line": 61,
+          "coverage": "直接",
+          "assertion_scope": "幅度恰4%不触发",
+          "execution": "PASS",
+          "current_line": 61
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "回放完成/窗口机制已实现，但四周与entry_week_high取ETF，§32要求399006；day=目标最终完成日，历史最后一笔进攻成交较早时仍等目标完成，属明确选择。third_lock_scope未读：回放新周期重置、独用confirm_execution保留锁/次数；所有cycle事件/峰值为内存，缺重启恢复。"
+    },
+    {
+      "definition_id": "week_direction_definition",
+      "name": "共振周方向MA60斜率>0",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          22
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/service.py",
+        "src/spear_shield/strategy/macro.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "run_research",
+        "resonance"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/service.py",
+          "function": "run_research",
+          "line": 24,
+          "end_line": 42,
+          "current_line": 24
+        },
+        {
+          "file": "src/spear_shield/strategy/macro.py",
+          "function": "resonance",
+          "line": 66,
+          "end_line": 74,
+          "current_line": 66
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_macro.py"
+      ],
+      "test_case": [
+        "test_matrix"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_macro.py",
+          "test_case": "test_matrix",
+          "line": 59,
+          "coverage": "直接",
+          "assertion_scope": "四布尔象限/未知；不测试周斜率生成",
+          "execution": "PASS",
+          "current_line": 59
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "低",
+      "notes": "builder用>0，已知0归False；service有approval门控。无斜率=0/未知端点集成断言，不能拿矩阵测试证明生成链。"
+    },
+    {
+      "definition_id": "defense_fuse_definition",
+      "name": "防守熔断两周相对下跌",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          28
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/features.py",
+        "src/spear_shield/strategy/defense.py"
+      ],
+      "function": [
+        "build_operational_snapshot",
+        "defense_plan"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/features.py",
+          "function": "build_operational_snapshot",
+          "line": 192,
+          "end_line": 437,
+          "current_line": 225
+        },
+        {
+          "file": "src/spear_shield/strategy/defense.py",
+          "function": "defense_plan",
+          "line": 11,
+          "end_line": 67,
+          "current_line": 11
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_inputs_audit_defense.py",
+        "tests/strategy/test_operational_features.py"
+      ],
+      "test_case": [
+        "test_defense_fuse_does_not_invent_bond_cash_split",
+        "test_defense_fuse_allocates_to_short_bond_only_under_delegated_policy"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_inputs_audit_defense.py",
+          "test_case": "test_defense_fuse_does_not_invent_bond_cash_split",
+          "line": 108,
+          "coverage": "直接",
+          "assertion_scope": "注入fuse=True减红利半，不授权转移则不可执行",
+          "execution": "PASS",
+          "current_line": 108
+        },
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_defense_fuse_allocates_to_short_bond_only_under_delegated_policy",
+          "line": 139,
+          "coverage": "间接",
+          "assertion_scope": "注入fuse，不验证两周生成",
+          "execution": "PASS",
+          "current_line": 139
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "实际要求两指数均跌且红利跌更多；§28允许红利跌而创业板涨时计更差，第6节只确定激活/资金执行与转移，没有明确替换相对跌幅公式，故额外要求创业板也跌属于实现收紧。未实现§28防守轮次熔断锁存/退出后重置，连续窗口恢复可立即回补；defense_scope未读，研究服务P0未成交也可active并返回executable计划，回放则受目标卖出与现金预算。无生成器和轮次测试。"
+    },
+    {
+      "definition_id": "defense_transfer_definition",
+      "name": "熔断释放全部转511360",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          28
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/defense.py",
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/backtest/engine.py"
+      ],
+      "function": [
+        "defense_plan",
+        "StrategyReplay.close",
+        "BacktestEngine.run"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/defense.py",
+          "function": "defense_plan",
+          "line": 11,
+          "end_line": 67,
+          "current_line": 11
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.close",
+          "line": 307,
+          "end_line": 456,
+          "current_line": 351
+        },
+        {
+          "file": "src/spear_shield/backtest/engine.py",
+          "function": "BacktestEngine.run",
+          "line": 111,
+          "end_line": 616,
+          "current_line": 111
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_operational_features.py",
+        "tests/strategy/test_inputs_audit_defense.py"
+      ],
+      "test_case": [
+        "test_defense_fuse_allocates_to_short_bond_only_under_delegated_policy",
+        "test_defense_exact_thresholds"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_defense_fuse_allocates_to_short_bond_only_under_delegated_policy",
+          "line": 139,
+          "coverage": "直接",
+          "assertion_scope": "中间Z档30/60/10，无未分配且可执行",
+          "execution": "PASS",
+          "current_line": 139
+        },
+        {
+          "test_file": "tests/strategy/test_inputs_audit_defense.py",
+          "test_case": "test_defense_exact_thresholds",
+          "line": 99,
+          "coverage": "直接",
+          "assertion_scope": "三档基础权重边界，非三档熔断全测",
+          "execution": "PASS",
+          "current_line": 99
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "中",
+      "notes": "approval+all_to_511360实际读取，释放量全进短融、货币不变。三档熔断中仅中档直接断言，实际卖出/现金预算链静态可见；P0未成交服务展示语义问题见防守熔断项。"
+    },
+    {
+      "definition_id": "same_priority_definition",
+      "name": "同级单一最大减仓及事件锁存",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          25
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/engine.py",
+        "src/spear_shield/strategy/rules.py",
+        "src/spear_shield/backtest/strategy_replay.py"
+      ],
+      "function": [
+        "StrategyEngine.evaluate",
+        "exit_rules",
+        "StrategyReplay.close",
+        "StrategyReplay.execution"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/engine.py",
+          "function": "StrategyEngine.evaluate",
+          "line": 15,
+          "end_line": 134,
+          "current_line": 15
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.close",
+          "line": 307,
+          "end_line": 456,
+          "current_line": 351
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.execution",
+          "line": 75,
+          "end_line": 208,
+          "current_line": 76
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_operational_features.py",
+        "tests/strategy/test_rules.py",
+        "tests/strategy/test_replay_regressions.py"
+      ],
+      "test_case": [
+        "test_delegated_same_priority_is_single_largest_action",
+        "test_same_priority_conflict_not_stacked",
+        "test_risk_latches_after_fill_rearms_only_on_known_false"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_operational_features.py",
+          "test_case": "test_delegated_same_priority_is_single_largest_action",
+          "line": 169,
+          "coverage": "间接",
+          "assertion_scope": "断言P0_TREND，只有一个P0动作，未进入同级len>1分支",
+          "execution": "PASS",
+          "current_line": 169
+        },
+        {
+          "test_file": "tests/strategy/test_rules.py",
+          "test_case": "test_same_priority_conflict_not_stacked",
+          "line": 54,
+          "coverage": "直接",
+          "assertion_scope": "无同级approval时P1冲突；非授权最大分支",
+          "execution": "PASS",
+          "current_line": 54
+        },
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_risk_latches_after_fill_rearms_only_on_known_false",
+          "line": 174,
+          "coverage": "直接",
+          "assertion_scope": "已卖风险锁存、未知不解除、False重武装及部分成交取消",
+          "execution": "PASS",
+          "current_line": 174
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "max fraction/clear=1、并列注册顺序已实现，与最终节一致，不报旧rule_id排序差异。eligible先按权重换算，但回放eligible_lot_weight对有lot直接用全持仓，未逐lot资格；T+1实际可卖量不参与仲裁。授权最大与并列无直接测试，事件锁存仅内存。"
+    },
+    {
+      "definition_id": "entry_precedence_definition",
+      "name": "入场路径仲裁顺序",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          24
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/strategy/engine.py",
+        "src/spear_shield/strategy/operational.py"
+      ],
+      "function": [
+        "StrategyEngine.evaluate",
+        "operational_policy"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/strategy/engine.py",
+          "function": "StrategyEngine.evaluate",
+          "line": 15,
+          "end_line": 134,
+          "current_line": 15
+        },
+        {
+          "file": "src/spear_shield/strategy/operational.py",
+          "function": "operational_policy",
+          "line": 9,
+          "end_line": 88,
+          "current_line": 9
+        }
+      ],
+      "test_file": [
+        "tests/strategy/test_engine_workflow.py",
+        "tests/strategy/test_replay_regressions.py"
+      ],
+      "test_case": [
+        "test_entry_paths_conflict_without_invented_precedence",
+        "test_full_nuclear_requires_actual_four_dimensions",
+        "test_each_entry_and_restore_checks_its_fraction_and_all_cost_buffers"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_entry_paths_conflict_without_invented_precedence",
+          "line": 84,
+          "coverage": "直接",
+          "assertion_scope": "无授权多入口冲突",
+          "execution": "PASS",
+          "current_line": 84
+        },
+        {
+          "test_file": "tests/strategy/test_engine_workflow.py",
+          "test_case": "test_full_nuclear_requires_actual_four_dimensions",
+          "line": 45,
+          "coverage": "直接",
+          "assertion_scope": "核弹替代FIRST；缺核弹数据可回FIRST，非完整tuple",
+          "execution": "PASS",
+          "current_line": 45
+        },
+        {
+          "test_file": "tests/strategy/test_replay_regressions.py",
+          "test_case": "test_each_entry_and_restore_checks_its_fraction_and_all_cost_buffers",
+          "line": 372,
+          "coverage": "间接",
+          "assertion_scope": "只调用entry_rules逐项看预算，没有调用仲裁",
+          "execution": "PASS",
+          "current_line": 372
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "完成",
+      "risk": "中",
+      "notes": "读取完整tuple，仅已触发动作参与，核弹替代FIRST，注册顺序可审阅。没有直接断言CATCHUP>BEAR>FIRST>FAST>SECOND>THIRD>RESTORE完整次序；完成是静态实现结论，不是全顺序测试通过。"
+    },
+    {
+      "definition_id": "atr_drawdown_definition",
+      "name": "前周ETF ATR14冻结、日OHLC止损",
+      "source": {
+        "authorization_nature": "负责人授权自主查证与选择下的工程定义；非用户逐项指定，非原作者唯一规定，非网络证明最优",
+        "primary": "docs/strategy/operational_definitions.md#2026-11-03-final",
+        "supporting_sections": [
+          6,
+          15,
+          31
+        ],
+        "approval_value": "delegated-2026-11-03-v1:docs/strategy/operational_definitions.md#2026-11-03-final"
+      },
+      "implementation_file": [
+        "src/spear_shield/backtest/strategy_replay.py",
+        "src/spear_shield/indicators/atr.py",
+        "src/spear_shield/indicators/_common.py",
+        "src/spear_shield/backtest/engine.py",
+        "src/spear_shield/strategy/inputs.py",
+        "src/spear_shield/strategy/rules.py"
+      ],
+      "function": [
+        "StrategyReplay.stop_provider",
+        "StrategyReplay.execution",
+        "StrategyReplay._context",
+        "atr",
+        "wilder_smooth",
+        "BacktestEngine.run",
+        "build_snapshot",
+        "exit_rules"
+      ],
+      "implementation_evidence": [
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.stop_provider",
+          "line": 210,
+          "end_line": 240,
+          "current_line": 254
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay.execution",
+          "line": 75,
+          "end_line": 208,
+          "current_line": 76
+        },
+        {
+          "file": "src/spear_shield/backtest/strategy_replay.py",
+          "function": "StrategyReplay._context",
+          "line": 242,
+          "end_line": 305,
+          "current_line": 286
+        },
+        {
+          "file": "src/spear_shield/indicators/atr.py",
+          "function": "atr",
+          "line": 20,
+          "end_line": 32,
+          "current_line": 20
+        },
+        {
+          "file": "src/spear_shield/indicators/_common.py",
+          "function": "wilder_smooth",
+          "line": 13,
+          "end_line": 26,
+          "current_line": 13
+        },
+        {
+          "file": "src/spear_shield/backtest/engine.py",
+          "function": "BacktestEngine.run",
+          "line": 111,
+          "end_line": 616,
+          "current_line": 111
+        },
+        {
+          "file": "src/spear_shield/strategy/inputs.py",
+          "function": "build_snapshot",
+          "line": 58,
+          "end_line": 107,
+          "current_line": 58
+        },
+        {
+          "file": "src/spear_shield/strategy/rules.py",
+          "function": "exit_rules",
+          "line": 30,
+          "end_line": 182,
+          "current_line": 30
+        }
+      ],
+      "test_file": [
+        "tests/unit/test_indicators.py",
+        "tests/strategy/test_risk_boundaries.py",
+        "tests/unit/test_backtest_stops.py"
+      ],
+      "test_case": [
+        "test_atr_hand_calc",
+        "test_atr_strict_price_boundary",
+        "test_gapdown_and_intraday_cross_use_fixed_line_not_future_low",
+        "test_t_plus_one_can_sell_old_shares_but_not_today_top_up",
+        "test_provider_controls_reissue_no_engine_weekly_deduplication"
+      ],
+      "test_evidence": [
+        {
+          "test_file": "tests/unit/test_indicators.py",
+          "test_case": "test_atr_hand_calc",
+          "line": 91,
+          "coverage": "直接",
+          "assertion_scope": "TR种子和Wilder递推，period3",
+          "execution": "PASS",
+          "current_line": 91
+        },
+        {
+          "test_file": "tests/strategy/test_risk_boundaries.py",
+          "test_case": "test_atr_strict_price_boundary",
+          "line": 15,
+          "coverage": "直接",
+          "assertion_scope": "注入价差恰2倍不触发",
+          "execution": "PASS",
+          "current_line": 15
+        },
+        {
+          "test_file": "tests/unit/test_backtest_stops.py",
+          "test_case": "test_gapdown_and_intraday_cross_use_fixed_line_not_future_low",
+          "line": 73,
+          "coverage": "直接",
+          "assertion_scope": "通用引擎固定stop价、跳空/滑点，provider是测试preset",
+          "execution": "PASS",
+          "current_line": 73
+        },
+        {
+          "test_file": "tests/unit/test_backtest_stops.py",
+          "test_case": "test_t_plus_one_can_sell_old_shares_but_not_today_top_up",
+          "line": 185,
+          "coverage": "直接",
+          "assertion_scope": "引擎T+1部分可卖，不测回放stop_remaining续卖",
+          "execution": "PASS",
+          "current_line": 185
+        },
+        {
+          "test_file": "tests/unit/test_backtest_stops.py",
+          "test_case": "test_provider_controls_reissue_no_engine_weekly_deduplication",
+          "line": 204,
+          "coverage": "直接",
+          "assertion_scope": "明确引擎依赖provider，测试preset可重复减半",
+          "execution": "PASS",
+          "current_line": 204
+        }
+      ],
+      "test_coverage": "直接（局部断言）",
+      "status": "部分完成",
+      "risk": "高",
+      "notes": "最终节已改ETF159915，不报§31旧指数冲突。回放前周ATR/收盘固定线与stop_remaining/周锁已编码；未发现直接测试StrategyReplay.stop_provider的冻结、每周一次与T+1续卖。atr_once_per_week只在周规则读取，provider无条件去重；旧build_snapshot输出当周信号资产ATR。盘中引擎目标开盘先于stop执行，故不是全路径P0/ATR行为等价。"
+    }
+  ],
+  "reviewed_file_sha256": {
+    "docs/development/phase6_completion_results.md": "a7b53b2fb32409511943bd523ccb6baf366ec44716a55d29879c5500c8ebb66e",
+    "docs/strategy/operational_definitions.md": "0d0c7d7bfefedaa5f149677ff22fed5951437d73cfb81ff27eeaebb290581e11",
+    "src/spear_shield/__init__.py": "add9bdd109d1bba2f0b395b63a53410ab7ac6dc73cea1c423c32a3f7e87f192f",
+    "src/spear_shield/__main__.py": "2f1d738d156272aaceb6e267991ff0ae7530eccc1c9013891fd03b9ee5080d84",
+    "src/spear_shield/backtest/__init__.py": "deeddbf3d7f42f74de5469a2a855f6e86605abd760ef295935eb161f356a5eb5",
+    "src/spear_shield/backtest/engine.py": "0b60315f3f3f618a637b2eeaff8ccc12d69fd10b2a706b350608df6e54dbda89",
+    "src/spear_shield/backtest/metrics.py": "ffe7025a4800e7ab89d7cff3a854c21e95ac3933ba3f8ed4935b4c46658581e6",
+    "src/spear_shield/backtest/models.py": "b0858c374af8cbdcdbd81b84d09720343643758194b2c9a2623b12da0036888d",
+    "src/spear_shield/backtest/reporting.py": "72da457706f25dd57eb04b4c2ad4bc5d8d80e574352c2c5e054e226847b70056",
+    "src/spear_shield/backtest/research.py": "710c18fa61b71f6e819abb1f1a059208910d523e91b202e3ad67656b6c6aba46",
+    "src/spear_shield/backtest/strategy_replay.py": "a110b80b0941ab3bee4311fc7dd380e5f26bcee86a053e5ce07d968c10eda7e3",
+    "src/spear_shield/backtest/worker.py": "d09597b72fd3174eb8012be0c68e46c35135bf58b55145ce1b1f872628f86fd9",
+    "src/spear_shield/config/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/config/settings.py": "e30070a4859a262718601c624612cda1f104ccb674503e066c20d29429c5c125",
+    "src/spear_shield/config/symbols.py": "132536e186ec075add3df31d9a6980d2617f594ee26e7259b51dad319d7e81c7",
+    "src/spear_shield/core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/data/akshare_provider.py": "5e2a3af7ea0c4034fe2bfe99fd6d2690dc1364ed808784e8f4b07096286c8170",
+    "src/spear_shield/data/base.py": "a9d88737e71a441ee73135172b5dfecdf65bab92c8edacbed095ead945e395e2",
+    "src/spear_shield/data/fetch_worker.py": "79e2652355340c6002e2d1f317147a1f702785e861e403758a59d63f08378442",
+    "src/spear_shield/data/history_audit.py": "e89ea4d3e3f37cc4d98f649315a19551881d0f92aee795628666b7b38f05ef44",
+    "src/spear_shield/data/quality.py": "48f9ca46dc1c4b4b435fc6fa508bf385000e32d75fe225c16bdafafb57656ef5",
+    "src/spear_shield/data/registry.py": "d8bd5da2ef592fc0337a1d96eae65858dce0104302dec65a7be253dc02aa92de",
+    "src/spear_shield/data/resample.py": "f5a8bc3fe6b2495e9f0749f5ff426d33c5ded1098ef4a1701a59a00333f1fdf1",
+    "src/spear_shield/data/research_sources.py": "32b3e830cf406e1abe308f9ee68e3b6a79989f3e86fa6b1dd37db84f54a22141",
+    "src/spear_shield/data/service.py": "2d4560ae4acc9ec3f07f00f0c8bc94eeebbfa391df443ac9e35f50add6e556cd",
+    "src/spear_shield/data/sina_provider.py": "8c24a3bf73e21c0f0e890b6d9457ea26ccdf95c2105ae65101a01c85ea710918",
+    "src/spear_shield/database/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/database/engine.py": "fc35441321623150e1318ffc69be3609aec20255f651f9ce2c97ce0bded7cb82",
+    "src/spear_shield/database/models.py": "b77fcf95cb1bc829b95eab61091655184f47b8bd18b34a960696a29e360ab0ba",
+    "src/spear_shield/database/repository.py": "9ddffd88cdca7372a64cb02c413a7fc81747b7a573ace6946b31f5b24d1bcf64",
+    "src/spear_shield/database/strategy_audit.py": "a5691a9722ba767d8428e809308474da4b7315cfb45e25d1418dd83724c31365",
+    "src/spear_shield/indicators/__init__.py": "d19dec1722db5912198144bcee76d67a2f4cfe1aa46ba2e6dc546fd28953f558",
+    "src/spear_shield/indicators/_common.py": "cecbf68e0e86c688367628bb5d60211540bc383bf07b40440c93353fe40a1350",
+    "src/spear_shield/indicators/atr.py": "1d372cc4bdc67ba77d7a3c68e125949144ef2c4ed1f45690aeedf8cbada05494",
+    "src/spear_shield/indicators/bollinger.py": "1fdef5a8eb29fe4ee6ad018b07062ce194b0380af9145e6af82ede9fa18b2b8c",
+    "src/spear_shield/indicators/engine.py": "5baca1657ed4a28ed884f8d9a001999c0aecad2f949aaf1510db482cc223e3e3",
+    "src/spear_shield/indicators/macd.py": "db504625548b68087c09f0b5c6267e434316c90d7456514d2caec25d33c44efa",
+    "src/spear_shield/indicators/macro.py": "0db843e3d554122474bc4632605252a01fe74c61b57eff2c997e63174cea6fbd",
+    "src/spear_shield/indicators/moving_average.py": "34803f6deb8a72086bfbc32bbe5d07c65874442511bd1a325ae396abcc500bd7",
+    "src/spear_shield/indicators/price.py": "058a057ffb7d15b9056ccce7d73de08e00629fd558174d20389a6ad17bce00af",
+    "src/spear_shield/indicators/rsi.py": "a027d4bdf441134ce00662e009641be7ecc5c77ad3512dd3a7713d2dd79f9ccb",
+    "src/spear_shield/indicators/volume.py": "e3d2764a603b8fd66d032878cbdb6358715214c3d968152100020f4fa12de39d",
+    "src/spear_shield/main.py": "3a519e93ce0aaece03de19a3a04158b99fc97e339d178f57ecd79695f97df4e3",
+    "src/spear_shield/portfolio/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/portfolio/paper_account.py": "e34cfa936e9bf7c9b2189bf5309be002e269a28472b095cd0966c66ae8e95c1c",
+    "src/spear_shield/portfolio/state.py": "2bcc452d2181d4738ecd666b45146c9712587e66a26185c4ef8031b84d87f353",
+    "src/spear_shield/services/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/services/reporting.py": "3d36ca8d6dccc6894971339401771b9dcc620b832e6533bbac9c54c5e391580b",
+    "src/spear_shield/services/research_dataset.py": "0a9e238e53abe7c90130c63659188120e475b3cae9f650e122dec310ac73264c",
+    "src/spear_shield/services/workspace.py": "30af494c8424faea978f3c0cc957d603f805d0fcace4057f15c5aef61b86a624",
+    "src/spear_shield/strategy/__init__.py": "3d7f865527f73fd0e78a3acce2592893116625eb70e0c270e9d4ac4e61aa3a0d",
+    "src/spear_shield/strategy/defense.py": "7b7552155af739a1c94581142802ba0ba3262f777724edf11e13a2310280c3aa",
+    "src/spear_shield/strategy/engine.py": "d2e561615776102dbe09a39d6821693ef2dc5f19d75230649c6e5a7581b03c7e",
+    "src/spear_shield/strategy/evaluation.py": "320be277429400892735a7a6acec76040d76fc915770f8e41156b7b3294f99a2",
+    "src/spear_shield/strategy/features.py": "76f3ed82ace094b465e43ac7a0ccb5ea4dde5af1b125c579fb2e777035a5c77d",
+    "src/spear_shield/strategy/inputs.py": "8919e2a416ce44aced0653fdfdf02f78596b7b3c5471673e2d9cce7cbd5218a1",
+    "src/spear_shield/strategy/macro.py": "e7f9bb2ac8888cd8a3e11002971f1099d1241685afae05d36fd3b70778f5fdd9",
+    "src/spear_shield/strategy/operational.py": "4e06628a8943b675f9b2dd079ce30ca89bef4f977edbfc4eb3d2eee8378dcce7",
+    "src/spear_shield/strategy/rules.py": "bd3eb60cfc76f2950b9c7db8c96347394c03fe3a6684137b0b7a9d1af02ebcdd",
+    "src/spear_shield/strategy/service.py": "ad74e88eaeb5bb930d49095b8860ba1082353688033ccb96d772a3a446f0d9a7",
+    "src/spear_shield/strategy/types.py": "6780f9841d2bd43bf856bb36477161165e238ba36ff238795034adeff3dc75cb",
+    "src/spear_shield/ui/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/ui/charts.py": "332e5a6ad107fc03aa99a63f11b02b7269a9e84d4a7ff999f3cfecca0edc4a88",
+    "src/spear_shield/ui/controller.py": "b398b54f7846c00b0fbbf0b633e4dd0fe3c87359b0ed51fe10fe17fd12341438",
+    "src/spear_shield/ui/jobs.py": "082bc6b9404bf59f9ebff00806cd0c5f0914af5aaeeb0fe04c2362129a8f2880",
+    "src/spear_shield/ui/main_window.py": "df11b371d5497c654a92a391e3f24c334cfad09235b7ca56b0a9a3c49b213fe9",
+    "src/spear_shield/ui/pages/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/ui/pages/account.py": "397f72633635fc38967b780ba55eb7302045073003d033fbfb09592f9dc29666",
+    "src/spear_shield/ui/pages/backtest_center.py": "57d8a637730de26384386b3238e0bad10dceccc3bef26c06e43708e70aa2db61",
+    "src/spear_shield/ui/pages/base.py": "7855582f64d2e4a9ec1c1bfc198fb8303aea888a6fae1c9f033307a33e0e5285",
+    "src/spear_shield/ui/pages/cycle_resonance.py": "b8a2a64f34e83c57133b8b80b02a6ba226a0788dc1a7b6f9687cb76e39199eca",
+    "src/spear_shield/ui/pages/dashboard.py": "5d24be2f0555ea26745ecb0925fb626c39f94402a5c6bc7f0532e9fde996971f",
+    "src/spear_shield/ui/pages/data_management.py": "71e42c3224cabf98017d2c83a0868183ab1a42c9c03f73eb241fc6c6fc752ece",
+    "src/spear_shield/ui/pages/market_analysis.py": "294e20f7493a0c668f5c1a51ba7a7c1c4a15073397cb6598ddadf2b54315cce2",
+    "src/spear_shield/ui/pages/signal_center.py": "4b8ed67b33b28af94ce473e4b968640419e48deabedae6c2f79693b2a9947714",
+    "src/spear_shield/ui/pages/thermometer.py": "cdb18c205bc2fa34f69fa3e5395738b034a4c49ebdf0e45fe743a85ad2782420",
+    "src/spear_shield/ui/pages/weekly_report.py": "03f3aced3d8024739c855b08a9d00c92547d5a1a4ba0f466e1f318c1a99d2df0",
+    "src/spear_shield/ui/theme.py": "41a13a0644a9e96870e7cf1d3c5f6f9b8a3d344421456a3fed7b39253c88f6da",
+    "src/spear_shield/ui/widgets.py": "75f73062e73f4af80bb78ac929a3de7be2c6aee4d7f0205a4285fe6acc45095c",
+    "src/spear_shield/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/utils/logger.py": "40ffa469cb162cb6d34ccd8c22f3809f3ed3288595bda4a671d00bec33dfd528",
+    "src/spear_shield/utils/retry.py": "59a6512b293d8652a41cdc27876279e1cdb61da8d2986f6edfe849db87552ee3",
+    "tests/strategy/test_engine_workflow.py": "2b87ba9241d94d832593b6807288c1a874c86d814cdc3166e88561ce6e5341e8",
+    "tests/strategy/test_inputs_audit_defense.py": "7b907b6697acf1205033532e069cb562ac000383fd50fddf8940c4658838c1c1",
+    "tests/strategy/test_macro.py": "6d4d06a12e6d18d26352ae6a6d78b798e0458efed5c56172723fe7a8f1978427",
+    "tests/strategy/test_operational_features.py": "873bdcb8e30bc39b9c08424b2a4b56c554c028e301488f7da1f040bb37485800",
+    "tests/strategy/test_replay_regressions.py": "be1ad7fb7bc3e8d4e29f91964d98dfd3317aed40ab96e55e1904f4b17434938f",
+    "tests/strategy/test_risk_boundaries.py": "c101dc2b21738be49935321965a7920fde2f1a6b2d6144224713d5411a6fa098",
+    "tests/strategy/test_rules.py": "8304583e4fce212e2fa74a4734097029142ea535c08cf579d2d00a1c85cdcb37",
+    "tests/unit/test_backtest_stops.py": "24f354c1b18a70a33082de87019d7a833df4182c091ed5c403a214e24689ddce",
+    "tests/unit/test_indicators.py": "2bdf6d63a298977c5fa1e04e620cdfac6e75d9d2a71c1a206dc53690d386b47b",
+    "tests/unit/test_research_dataset.py": "eae1f1fbf81511d4c3e4bbbf9b70de1f97628067d97735065d8eb7b258816250",
+    "tests/unit/test_research_sources.py": "5da636c26dff7bad6bda2ce14e74350ed9a7aa438fa97ceaf6f75e7d50eb4318"
+  },
+  "baseline_reviewed_file_sha256": {
+    "docs/development/phase6_completion_results.md": "a7b53b2fb32409511943bd523ccb6baf366ec44716a55d29879c5500c8ebb66e",
+    "docs/strategy/operational_definitions.md": "0d0c7d7bfefedaa5f149677ff22fed5951437d73cfb81ff27eeaebb290581e11",
+    "src/spear_shield/__init__.py": "add9bdd109d1bba2f0b395b63a53410ab7ac6dc73cea1c423c32a3f7e87f192f",
+    "src/spear_shield/__main__.py": "2f1d738d156272aaceb6e267991ff0ae7530eccc1c9013891fd03b9ee5080d84",
+    "src/spear_shield/backtest/__init__.py": "deeddbf3d7f42f74de5469a2a855f6e86605abd760ef295935eb161f356a5eb5",
+    "src/spear_shield/backtest/engine.py": "0b60315f3f3f618a637b2eeaff8ccc12d69fd10b2a706b350608df6e54dbda89",
+    "src/spear_shield/backtest/metrics.py": "ffe7025a4800e7ab89d7cff3a854c21e95ac3933ba3f8ed4935b4c46658581e6",
+    "src/spear_shield/backtest/models.py": "b0858c374af8cbdcdbd81b84d09720343643758194b2c9a2623b12da0036888d",
+    "src/spear_shield/backtest/reporting.py": "0d205bdebe946f09a0686728bc35cddbe25601c64fb90cdd9a61b90bed2429b7",
+    "src/spear_shield/backtest/research.py": "d0e0ca10fe1af07e83bb2cd167f04df003bdd2d53481046305c15e42b99797af",
+    "src/spear_shield/backtest/strategy_replay.py": "ed563e905a0735f5382455e2a4b74743fda829f6f0c973e6d8beb72a30d2fd39",
+    "src/spear_shield/backtest/worker.py": "d09597b72fd3174eb8012be0c68e46c35135bf58b55145ce1b1f872628f86fd9",
+    "src/spear_shield/config/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/config/settings.py": "e30070a4859a262718601c624612cda1f104ccb674503e066c20d29429c5c125",
+    "src/spear_shield/config/symbols.py": "132536e186ec075add3df31d9a6980d2617f594ee26e7259b51dad319d7e81c7",
+    "src/spear_shield/core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/data/akshare_provider.py": "5e2a3af7ea0c4034fe2bfe99fd6d2690dc1364ed808784e8f4b07096286c8170",
+    "src/spear_shield/data/base.py": "a9d88737e71a441ee73135172b5dfecdf65bab92c8edacbed095ead945e395e2",
+    "src/spear_shield/data/fetch_worker.py": "79e2652355340c6002e2d1f317147a1f702785e861e403758a59d63f08378442",
+    "src/spear_shield/data/history_audit.py": "e89ea4d3e3f37cc4d98f649315a19551881d0f92aee795628666b7b38f05ef44",
+    "src/spear_shield/data/quality.py": "48f9ca46dc1c4b4b435fc6fa508bf385000e32d75fe225c16bdafafb57656ef5",
+    "src/spear_shield/data/registry.py": "d8bd5da2ef592fc0337a1d96eae65858dce0104302dec65a7be253dc02aa92de",
+    "src/spear_shield/data/resample.py": "f5a8bc3fe6b2495e9f0749f5ff426d33c5ded1098ef4a1701a59a00333f1fdf1",
+    "src/spear_shield/data/research_sources.py": "32b3e830cf406e1abe308f9ee68e3b6a79989f3e86fa6b1dd37db84f54a22141",
+    "src/spear_shield/data/service.py": "2d4560ae4acc9ec3f07f00f0c8bc94eeebbfa391df443ac9e35f50add6e556cd",
+    "src/spear_shield/data/sina_provider.py": "8c24a3bf73e21c0f0e890b6d9457ea26ccdf95c2105ae65101a01c85ea710918",
+    "src/spear_shield/database/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/database/engine.py": "fc35441321623150e1318ffc69be3609aec20255f651f9ce2c97ce0bded7cb82",
+    "src/spear_shield/database/models.py": "b77fcf95cb1bc829b95eab61091655184f47b8bd18b34a960696a29e360ab0ba",
+    "src/spear_shield/database/repository.py": "9ddffd88cdca7372a64cb02c413a7fc81747b7a573ace6946b31f5b24d1bcf64",
+    "src/spear_shield/database/strategy_audit.py": "a5691a9722ba767d8428e809308474da4b7315cfb45e25d1418dd83724c31365",
+    "src/spear_shield/indicators/__init__.py": "d19dec1722db5912198144bcee76d67a2f4cfe1aa46ba2e6dc546fd28953f558",
+    "src/spear_shield/indicators/_common.py": "cecbf68e0e86c688367628bb5d60211540bc383bf07b40440c93353fe40a1350",
+    "src/spear_shield/indicators/atr.py": "1d372cc4bdc67ba77d7a3c68e125949144ef2c4ed1f45690aeedf8cbada05494",
+    "src/spear_shield/indicators/bollinger.py": "1fdef5a8eb29fe4ee6ad018b07062ce194b0380af9145e6af82ede9fa18b2b8c",
+    "src/spear_shield/indicators/engine.py": "5baca1657ed4a28ed884f8d9a001999c0aecad2f949aaf1510db482cc223e3e3",
+    "src/spear_shield/indicators/macd.py": "db504625548b68087c09f0b5c6267e434316c90d7456514d2caec25d33c44efa",
+    "src/spear_shield/indicators/macro.py": "0db843e3d554122474bc4632605252a01fe74c61b57eff2c997e63174cea6fbd",
+    "src/spear_shield/indicators/moving_average.py": "34803f6deb8a72086bfbc32bbe5d07c65874442511bd1a325ae396abcc500bd7",
+    "src/spear_shield/indicators/price.py": "058a057ffb7d15b9056ccce7d73de08e00629fd558174d20389a6ad17bce00af",
+    "src/spear_shield/indicators/rsi.py": "a027d4bdf441134ce00662e009641be7ecc5c77ad3512dd3a7713d2dd79f9ccb",
+    "src/spear_shield/indicators/volume.py": "e3d2764a603b8fd66d032878cbdb6358715214c3d968152100020f4fa12de39d",
+    "src/spear_shield/main.py": "3a519e93ce0aaece03de19a3a04158b99fc97e339d178f57ecd79695f97df4e3",
+    "src/spear_shield/portfolio/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/portfolio/paper_account.py": "e34cfa936e9bf7c9b2189bf5309be002e269a28472b095cd0966c66ae8e95c1c",
+    "src/spear_shield/portfolio/state.py": "2bcc452d2181d4738ecd666b45146c9712587e66a26185c4ef8031b84d87f353",
+    "src/spear_shield/services/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/services/reporting.py": "3d36ca8d6dccc6894971339401771b9dcc620b832e6533bbac9c54c5e391580b",
+    "src/spear_shield/services/research_dataset.py": "0a9e238e53abe7c90130c63659188120e475b3cae9f650e122dec310ac73264c",
+    "src/spear_shield/services/workspace.py": "30af494c8424faea978f3c0cc957d603f805d0fcace4057f15c5aef61b86a624",
+    "src/spear_shield/strategy/__init__.py": "3d7f865527f73fd0e78a3acce2592893116625eb70e0c270e9d4ac4e61aa3a0d",
+    "src/spear_shield/strategy/defense.py": "7b7552155af739a1c94581142802ba0ba3262f777724edf11e13a2310280c3aa",
+    "src/spear_shield/strategy/engine.py": "d2e561615776102dbe09a39d6821693ef2dc5f19d75230649c6e5a7581b03c7e",
+    "src/spear_shield/strategy/evaluation.py": "320be277429400892735a7a6acec76040d76fc915770f8e41156b7b3294f99a2",
+    "src/spear_shield/strategy/features.py": "d07fde6d43acb8a3074c59cc68911d1a7c2df96889aaf4ae6d03dfcea259ffc8",
+    "src/spear_shield/strategy/inputs.py": "8919e2a416ce44aced0653fdfdf02f78596b7b3c5471673e2d9cce7cbd5218a1",
+    "src/spear_shield/strategy/macro.py": "e7f9bb2ac8888cd8a3e11002971f1099d1241685afae05d36fd3b70778f5fdd9",
+    "src/spear_shield/strategy/operational.py": "4e06628a8943b675f9b2dd079ce30ca89bef4f977edbfc4eb3d2eee8378dcce7",
+    "src/spear_shield/strategy/rules.py": "bd3eb60cfc76f2950b9c7db8c96347394c03fe3a6684137b0b7a9d1af02ebcdd",
+    "src/spear_shield/strategy/service.py": "ad74e88eaeb5bb930d49095b8860ba1082353688033ccb96d772a3a446f0d9a7",
+    "src/spear_shield/strategy/types.py": "6780f9841d2bd43bf856bb36477161165e238ba36ff238795034adeff3dc75cb",
+    "src/spear_shield/ui/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/ui/charts.py": "332e5a6ad107fc03aa99a63f11b02b7269a9e84d4a7ff999f3cfecca0edc4a88",
+    "src/spear_shield/ui/controller.py": "b398b54f7846c00b0fbbf0b633e4dd0fe3c87359b0ed51fe10fe17fd12341438",
+    "src/spear_shield/ui/jobs.py": "082bc6b9404bf59f9ebff00806cd0c5f0914af5aaeeb0fe04c2362129a8f2880",
+    "src/spear_shield/ui/main_window.py": "df11b371d5497c654a92a391e3f24c334cfad09235b7ca56b0a9a3c49b213fe9",
+    "src/spear_shield/ui/pages/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/ui/pages/account.py": "397f72633635fc38967b780ba55eb7302045073003d033fbfb09592f9dc29666",
+    "src/spear_shield/ui/pages/backtest_center.py": "0fe498c15de5aa3fc99df4594c7e4c2ed54ccafaf17455534a0e760e672c80cf",
+    "src/spear_shield/ui/pages/base.py": "7855582f64d2e4a9ec1c1bfc198fb8303aea888a6fae1c9f033307a33e0e5285",
+    "src/spear_shield/ui/pages/cycle_resonance.py": "b8a2a64f34e83c57133b8b80b02a6ba226a0788dc1a7b6f9687cb76e39199eca",
+    "src/spear_shield/ui/pages/dashboard.py": "5d24be2f0555ea26745ecb0925fb626c39f94402a5c6bc7f0532e9fde996971f",
+    "src/spear_shield/ui/pages/data_management.py": "71e42c3224cabf98017d2c83a0868183ab1a42c9c03f73eb241fc6c6fc752ece",
+    "src/spear_shield/ui/pages/market_analysis.py": "294e20f7493a0c668f5c1a51ba7a7c1c4a15073397cb6598ddadf2b54315cce2",
+    "src/spear_shield/ui/pages/signal_center.py": "190b40e0cf1bae147f20138350ed1896a2c41ad47d6f603745e981a4edf7af42",
+    "src/spear_shield/ui/pages/thermometer.py": "cdb18c205bc2fa34f69fa3e5395738b034a4c49ebdf0e45fe743a85ad2782420",
+    "src/spear_shield/ui/pages/weekly_report.py": "03f3aced3d8024739c855b08a9d00c92547d5a1a4ba0f466e1f318c1a99d2df0",
+    "src/spear_shield/ui/theme.py": "41a13a0644a9e96870e7cf1d3c5f6f9b8a3d344421456a3fed7b39253c88f6da",
+    "src/spear_shield/ui/widgets.py": "75f73062e73f4af80bb78ac929a3de7be2c6aee4d7f0205a4285fe6acc45095c",
+    "src/spear_shield/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/spear_shield/utils/logger.py": "40ffa469cb162cb6d34ccd8c22f3809f3ed3288595bda4a671d00bec33dfd528",
+    "src/spear_shield/utils/retry.py": "59a6512b293d8652a41cdc27876279e1cdb61da8d2986f6edfe849db87552ee3",
+    "tests/strategy/test_engine_workflow.py": "2b87ba9241d94d832593b6807288c1a874c86d814cdc3166e88561ce6e5341e8",
+    "tests/strategy/test_inputs_audit_defense.py": "7b907b6697acf1205033532e069cb562ac000383fd50fddf8940c4658838c1c1",
+    "tests/strategy/test_macro.py": "6d4d06a12e6d18d26352ae6a6d78b798e0458efed5c56172723fe7a8f1978427",
+    "tests/strategy/test_operational_features.py": "873bdcb8e30bc39b9c08424b2a4b56c554c028e301488f7da1f040bb37485800",
+    "tests/strategy/test_replay_regressions.py": "be1ad7fb7bc3e8d4e29f91964d98dfd3317aed40ab96e55e1904f4b17434938f",
+    "tests/strategy/test_risk_boundaries.py": "c101dc2b21738be49935321965a7920fde2f1a6b2d6144224713d5411a6fa098",
+    "tests/strategy/test_rules.py": "8304583e4fce212e2fa74a4734097029142ea535c08cf579d2d00a1c85cdcb37",
+    "tests/unit/test_backtest_stops.py": "24f354c1b18a70a33082de87019d7a833df4182c091ed5c403a214e24689ddce",
+    "tests/unit/test_indicators.py": "2bdf6d63a298977c5fa1e04e620cdfac6e75d9d2a71c1a206dc53690d386b47b",
+    "tests/unit/test_research_dataset.py": "eae1f1fbf81511d4c3e4bbbf9b70de1f97628067d97735065d8eb7b258816250",
+    "tests/unit/test_research_sources.py": "5da636c26dff7bad6bda2ce14e74350ed9a7aa438fa97ceaf6f75e7d50eb4318"
+  }
+}

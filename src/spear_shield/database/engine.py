@@ -31,6 +31,9 @@ class Database:
         """建表并写入当前 schema 版本。"""
         from . import strategy_audit  # noqa: F401 — 注册增量表，不修改既有行情表
         from ..portfolio import paper_account  # noqa: F401 — 模拟账户增量表
+        from ..portfolio import paper_execution  # noqa: F401 — 模拟订单/回执/净值增量表
+        from ..services import weekly_workflow  # noqa: F401 — 确认后的不可覆盖周裁决
+        from ..services import weekly_documents  # noqa: F401 — 历史周报增量表
 
         Base.metadata.create_all(self.engine)
         with self.session_factory() as session:

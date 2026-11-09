@@ -1,0 +1,203 @@
+{
+  "date": "2026-11-09",
+  "round1_atr_engineering_acceptance": "PASS within existing simulated execution model",
+  "atr_production_code_unchanged": true,
+  "frozen_parameters_unchanged": true,
+  "original_files_retained": true,
+  "round1_tests": {
+    "passed": 305,
+    "failed": 0,
+    "warnings": 9,
+    "seconds": 79.16
+  },
+  "final_tests": {
+    "passed": 313,
+    "failed": 0,
+    "skipped": 0,
+    "xfailed": 0,
+    "warnings": 9,
+    "seconds": 83.146,
+    "prior_303_retained": true,
+    "command": "python -m pytest --ignore=tests/integration/test_akshare_provider.py -q --basetemp=cache/usability-20261109/pytest-acceptance --junitxml=cache/usability-20261109/acceptance-tests.xml"
+  },
+  "first_full_regression": {
+    "passed": 312,
+    "failed": 1,
+    "reason": "180ms GUI heartbeat assertion observed only 1 tick while native validation ran concurrently; original assertion unchanged; focused rerun and sequential full rerun passed",
+    "xml": "cache/usability-20261109/final-regression.xml"
+  },
+  "independent_real_fetch": [
+    {
+      "status": "UPDATED",
+      "rows": 23,
+      "source": "akshare",
+      "code": "159915",
+      "cache_rows": 2877,
+      "cache_latest": "2026-11-09 00:00:00"
+    },
+    {
+      "status": "UPDATED",
+      "rows": 23,
+      "source": "akshare",
+      "code": "563020",
+      "cache_rows": 701,
+      "cache_latest": "2026-11-09 00:00:00"
+    },
+    {
+      "status": "UPDATED",
+      "rows": 23,
+      "source": "akshare",
+      "code": "511360",
+      "cache_rows": 689,
+      "cache_latest": "2026-11-09 00:00:00"
+    },
+    {
+      "status": "UPDATED",
+      "rows": 23,
+      "source": "akshare",
+      "code": "511990",
+      "cache_rows": 689,
+      "cache_latest": "2026-11-09 00:00:00"
+    },
+    {
+      "status": "UPDATED",
+      "rows": 22,
+      "source": "sina",
+      "code": "399006",
+      "cache_rows": 2877,
+      "cache_latest": "2026-11-06 00:00:00"
+    },
+    {
+      "status": "UPDATED",
+      "rows": 23,
+      "source": "akshare",
+      "code": "H30269",
+      "cache_rows": 3132,
+      "cache_latest": "2026-11-09 00:00:00"
+    }
+  ],
+  "native_gui": {
+    "ticks": 3905,
+    "updating": true,
+    "messages": [
+      "正在更新 159915，最长45秒；界面可继续操作",
+      "已更新 159915 共 2877 行；来源 akshare，非实时订阅",
+      "正在更新 563020，最长45秒；界面可继续操作",
+      "更新失败：更新超时，未写入缓存。保留原缓存，不视为实时。",
+      "正在更新 511360，最长45秒；界面可继续操作",
+      "已更新 511360 共 689 行；来源 akshare，非实时订阅",
+      "正在更新 511990，最长45秒；界面可继续操作",
+      "已更新 511990 共 689 行；来源 akshare，非实时订阅",
+      "正在更新 399006，最长45秒；界面可继续操作",
+      "更新失败：更新超时，未写入缓存。保留原缓存，不视为实时。",
+      "正在更新 H30269，最长45秒；界面可继续操作",
+      "已更新 H30269 共 3132 行；来源 akshare，非实时订阅",
+      "六标的更新结束：成功4/6；失败标的保留原缓存，详见数据管理日志"
+    ],
+    "visible": true,
+    "batch_results": [
+      {
+        "code": "159915",
+        "success": true
+      },
+      {
+        "success": false,
+        "error": "更新超时，未写入缓存"
+      },
+      {
+        "code": "511360",
+        "success": true
+      },
+      {
+        "code": "511990",
+        "success": true
+      },
+      {
+        "success": false,
+        "error": "更新超时，未写入缓存"
+      },
+      {
+        "code": "H30269",
+        "success": true
+      }
+    ],
+    "six_rows": 6,
+    "daily_indicators": [
+      "ma5",
+      "ma10",
+      "ma20",
+      "ma60",
+      "atr14"
+    ],
+    "ticks_before_close": 3885,
+    "reopened_six_rows": 6,
+    "reopened_history_rows": 2877
+  },
+  "artifacts": [
+    "assets/usability-20261109/daily_chart.png",
+    "assets/usability-20261109/dashboard.png",
+    "assets/usability-20261109/reopened.png",
+    "assets/usability-20261109/weekly_chart.png"
+  ],
+  "changed_preexisting_files_this_round": [
+    "src/spear_shield/data/akshare_provider.py",
+    "src/spear_shield/indicators/engine.py",
+    "src/spear_shield/ui/controller.py",
+    "src/spear_shield/ui/main_window.py",
+    "src/spear_shield/ui/pages/dashboard.py",
+    "src/spear_shield/ui/pages/data_management.py",
+    "src/spear_shield/ui/pages/market_analysis.py",
+    "tests/unit/test_atr_target_invalidation.py",
+    "docs/phase6_5/atr_target_fix_results.md"
+  ],
+  "new_files_this_round": [
+    "src/spear_shield/services/market_view.py",
+    "tests/unit/test_market_view.py",
+    "tests/integration/test_dashboard_usable.py",
+    "scripts/validate_desktop_market.py",
+    "scripts/capture_desktop_usability.py",
+    "docs/development/usability_round1.md",
+    "docs/development/usability_round2.md"
+  ],
+  "sha256": {
+    "CHANGELOG.md": "febf450dd41bd29288c81ff2cb010e9ede000e7e6c3bbbfd4f86d24ada57b027",
+    "README.md": "135eb29506513ea4162f5b68924c8dfbff29b5722accdce35d90185748539e32",
+    "assets/usability-20261109/daily_chart.png": "e83454d288fa1701e1ba8bec4e3d80e61fb20fc7033ea484ca5f4761f97aebe7",
+    "assets/usability-20261109/dashboard.png": "5a0a5ffdf0db803b54ea4ffaa75e83acb7f2f0e74f382e0c3fb436ca58adad96",
+    "assets/usability-20261109/reopened.png": "cd8c5e518b5602fc6f47d624d21eba565d49cdd185b737ebfea3f11e371c8555",
+    "assets/usability-20261109/weekly_chart.png": "e83454d288fa1701e1ba8bec4e3d80e61fb20fc7033ea484ca5f4761f97aebe7",
+    "docs/development/usability_round1.md": "0aa39af9a29b8f36442b2d2fd522967d19a4c490f613aef465b50329b6070c73",
+    "docs/development/usability_round2.md": "946e7b3f7b5a8e32535016124cfbd0047183f8f42b4ac1fef91d7291e57d33c4",
+    "docs/phase6_5/atr_target_fix_results.md": "ed002ccb7ddc61abd0df4107457b941e17d21d03ed83bd22ef0622cb6ab00fa2",
+    "scripts/capture_desktop_usability.py": "1bec5c4b1d4023a0d9b6e1044656aefd9b8d9a64637928690d34cc8f670e836a",
+    "scripts/validate_desktop_market.py": "8c46287882073536bd4f23d51f6fdfecc5bf3f630ed6e9f3ec1972ae2d28e621",
+    "src/spear_shield/data/akshare_provider.py": "b53d0b8ee5852d1909dae95affba59915aa762a3458a02fb61e3121c33ef16c3",
+    "src/spear_shield/indicators/engine.py": "c605c747666d21caa7fe10044b1cb69f6d0eb367a18b889eef79481ad774af8e",
+    "src/spear_shield/services/market_view.py": "95a19f553899d5871fae73ec613ca2a131fe961962a2a83ce13e7ec5331e17ec",
+    "src/spear_shield/ui/controller.py": "d31f43c64dd521067b9bebec7084efee372760f70d8c77a9120690d228d43f45",
+    "src/spear_shield/ui/main_window.py": "b1598dae77639d2fc9ea00f8ce109de0e642a53d4468e3b5c209c08cb173ba6c",
+    "src/spear_shield/ui/pages/dashboard.py": "72644c71bf35d36d5d8c58b69a9c493bfa242cd95d55b00ed7e48bae6d712747",
+    "src/spear_shield/ui/pages/data_management.py": "41a8dc8a5bef69e9db8b869c465d3acef745a339afd5f1da830f94340496f7e3",
+    "src/spear_shield/ui/pages/market_analysis.py": "358f9867d3269fa4984a7e9c29663327dd57e6f43cf038888a820dfe75c0cf71",
+    "tests/integration/test_dashboard_usable.py": "019794eab319ce0f78b3bec24bf13674dd1298cdc6ff14230b1bedb5e62bca23",
+    "tests/unit/test_atr_target_invalidation.py": "72747c031dfb9d022d887589a5f7fe706614c77d910edaaeeff1542bb42e9da3",
+    "tests/unit/test_market_view.py": "e01104b557bbeaace38f27256f3f9224e52cb7586fe23fed0df7c5b676de924d"
+  },
+  "test_evidence_sha256": {
+    "atr-regression.xml": "327bac6ce30541280331ddf9b9c011bcdf8aaeafeb8046bb1b64169f7bf4bddc",
+    "acceptance-tests.xml": "5e605dc1e980d0e3118bca21e3611f4db7b8dea0d732c982f68489eea8a8841d",
+    "gui_validation.json": "c91c625bff8bf5d8172e959d8a240457cd5b097d3a5fe0a4ef76eb64ad29fda7",
+    "real_fetch_results.json": "6c496ea685b0c7ab7f837511afdcbcbd987a0cf8d177214f83a484b50dc711b0"
+  },
+  "git_head": "5aa322defdbc7fa10f121a39acb92e3bb0950ddb",
+  "git_mutations": false,
+  "committed": false,
+  "pushed": false,
+  "limitations": [
+    "Full five-dimensional strategy remains incomplete; unavailable inputs UNKNOWN",
+    "Chart signal/price-level overlays and daily-use paper workflow deferred to round3",
+    "Free sources may time out; cache shown with actual dates and adjustment basis",
+    "Intraday daily and current weekly/monthly bars are observation only",
+    "Initial full regression timing failure retained and disclosed"
+  ]
+}

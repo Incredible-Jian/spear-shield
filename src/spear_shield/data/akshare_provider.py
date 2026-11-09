@@ -85,6 +85,10 @@ class AkShareProvider(DataProvider):
     def _fetch_index(self, symbol: Symbol, start: str, end: str) -> pd.DataFrame:
         import akshare as ak
 
+        if symbol.code == "H30269":
+            raw = ak.stock_zh_index_daily_em(symbol="csiH30269")
+            dates = pd.to_datetime(raw["date"])
+            return raw.loc[dates.between(pd.Timestamp(start), pd.Timestamp(end))].copy()
         return ak.index_zh_a_hist(
             symbol=symbol.code,
             period="daily",

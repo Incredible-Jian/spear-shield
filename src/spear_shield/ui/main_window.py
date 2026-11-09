@@ -162,7 +162,7 @@ class MainWindow(QMainWindow):
             page.refresh()
 
     def closeEvent(self, event):
-        self.controller.job.shutdown()
+        self.controller.shutdown()
         self.stack.widget(5).job.shutdown()
         self.settings.setValue("geometry", self.saveGeometry())
         for key, combo in self._preferences():

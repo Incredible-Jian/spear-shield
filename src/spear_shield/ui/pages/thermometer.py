@@ -28,7 +28,10 @@ class ThermometerPage(BasePage):
         self.select = QComboBox()
         self.select.addItems(self.NAMES)
         self.content_layout.addWidget(self.select)
-        self.details = table(["指标", "公式 / 阈值", "来源", "可用时间"], 190)
+        self.details = table(
+            ["指标", "公式 / 阈值", "来源", "数据日期 / 可用时间", "该维可计算", "完整策略可判断"],
+            190,
+        )
         self.content_layout.addWidget(self.details)
         self.chart = MarketChart(height=260)
         self.content_layout.addWidget(self.chart)
@@ -69,7 +72,20 @@ class ThermometerPage(BasePage):
                     name,
                     self.FORMULAS[i],
                     ", ".join(d.get("sources", [])) or "未接入",
-                    ", ".join(d.get("timestamps", [])) or "—",
+                    ((latest.get('analysis') or {}).get('macro_observation_dates',{}).get(name,'UNKNOWN') if latest else 'UNKNOWN')+' / '+(", ".join(d.get("timestamps", [])) or "—"),
+                    (
+                        "UNKNOWN"
+                        if d.get("status", "待确认") in ("待确认", "数据缺失")
+                        else "FALSE" if d.get("status") == "数据异常" else "TRUE"
+                    ),
+                    (
+                        "TRUE"
+                        if latest
+                        and (latest.get("analysis") or {})
+                        .get("macro", {})
+                        .get("complete")
+                        else "UNKNOWN / 五维未齐"
+                    ),
                 ]
             )
         fill(self.details, rows)

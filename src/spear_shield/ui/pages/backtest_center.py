@@ -119,6 +119,10 @@ class BacktestCenterPage(BasePage):
             150,
         )
         self.content_layout.addWidget(self.comparison)
+        self.attribution = table(
+            ["资产/范围", "研究单位净损益", "已计手续费", "成交笔数"], 150
+        )
+        self.content_layout.addWidget(self.attribution)
         self.cards = [
             PlaceholderCard(n, badge_text="尚无回测")
             for n in ("年化收益", "最大回撤", "夏普比率", "胜率 / 盈亏比")
@@ -208,6 +212,7 @@ class BacktestCenterPage(BasePage):
     def render_empty(self):
         fill(self.trades, [])
         fill(self.comparison, [])
+        fill(self.attribution, [])
         for card in self.cards:
             card.update_value("—", "无可计算结果", "待计算")
         self.chart.draw(pd.DataFrame(), title="无资金曲线")
@@ -231,6 +236,13 @@ class BacktestCenterPage(BasePage):
                     else "仅研究" if result else "阻塞"
                 )
             )
+            assessment = (
+                "完整可判断"
+                if result
+                and result["metadata"].get("complete_strategy_validated") is True
+                else "部分可判断" if result else "不可判断"
+            )
+            status = f"{assessment} / {status}"
             rows.append(
                 [
                     item["name"],
@@ -256,6 +268,28 @@ class BacktestCenterPage(BasePage):
         fill(self.comparison, rows)
         if results:
             result = results[0]
+            audit = result["metadata"].get("phase65_audit")
+            if audit:
+                fill(
+                    self.attribution,
+                    [
+                        [
+                            a["symbol"] + " / " + a["scope"],
+                            a["net_pnl"],
+                            a["fees"],
+                            a["trade_count"],
+                        ]
+                        for a in audit["attribution"]["assets"]
+                    ]
+                    + [
+                        [
+                            "现金独立收益（余额不是利润）",
+                            audit["attribution"]["cash"]["independent_pnl"],
+                            0.0,
+                            0,
+                        ]
+                    ],
+                )
             metrics = result["metrics"]
             values = [
                 pct(metrics["annual_return"]),

@@ -44,7 +44,7 @@ class IndicatorEngine:
         meta: dict[str, dict] = {}
 
         # 均线（MA60 周线 / 60 月线 / 10 周线 / 30 周线 均由此覆盖）
-        for w in (5, 10, 30, 60):
+        for w in (5, 10, 20, 30, 60):
             col = f"ma{w}"
             out[col] = compute_sma(out["close"], w)
             meta[col] = {"indicator": "sma", "window": w}

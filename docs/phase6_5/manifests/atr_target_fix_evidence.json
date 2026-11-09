@@ -1,0 +1,1525 @@
+{
+  "date": "2026-11-08",
+  "status": "implemented_awaiting_manual_acceptance",
+  "execution_policy": "atr-target-invalidation-A-20261108-v1",
+  "real_before": {
+    "weeks": 146,
+    "orders": 730,
+    "trades": 138,
+    "target_cancellations": 0,
+    "atr_actual_fill_count": 0,
+    "atr_statuses": {
+      "not_triggered": 679,
+      "no_position": 4
+    },
+    "metrics": {
+      "total_return": 0.23662070996508677,
+      "annual_return": 0.07804487035893411,
+      "max_drawdown": -0.11252713085103405,
+      "sharpe": 0.8245708485999819,
+      "win_rate": 0.6666666666666666,
+      "payoff_ratio": 968.7584568295184,
+      "profit_factor": 1937.516913659037,
+      "trade_count": 138,
+      "closed_trade_count": 66,
+      "fees": 171.21782799135,
+      "slippage_cost": 285.3381754999619,
+      "final_equity": 123662.07099650867
+    },
+    "end_quantities": {
+      "quantity_159915": 0.0,
+      "quantity_563020": 61622.0,
+      "quantity_511360": 317.0,
+      "quantity_511990": 120.0
+    }
+  },
+  "real_after": {
+    "weeks": 146,
+    "orders": 730,
+    "trades": 138,
+    "target_cancellations": 0,
+    "atr_actual_fill_count": 0,
+    "atr_statuses": {
+      "not_triggered": 679,
+      "no_position": 4
+    },
+    "metrics": {
+      "total_return": 0.23662070996508677,
+      "annual_return": 0.07804487035893411,
+      "max_drawdown": -0.11252713085103405,
+      "sharpe": 0.8245708485999819,
+      "win_rate": 0.6666666666666666,
+      "payoff_ratio": 968.7584568295184,
+      "profit_factor": 1937.516913659037,
+      "trade_count": 138,
+      "closed_trade_count": 66,
+      "fees": 171.21782799135,
+      "slippage_cost": 285.3381754999619,
+      "final_equity": 123662.07099650867
+    },
+    "end_quantities": {
+      "quantity_159915": 0.0,
+      "quantity_563020": 61622.0,
+      "quantity_511360": 317.0,
+      "quantity_511990": 120.0
+    }
+  },
+  "real_comparison": {
+    "weekly_audit_equal": true,
+    "curve_and_weights_equal": true,
+    "metrics_equal": true,
+    "trades_equal_excluding_new_audit_ids": true,
+    "orders_equal_excluding_new_audit_ids": true,
+    "signals_equal_excluding_new_audit_ids": true,
+    "input_sha256_equal": true
+  },
+  "tests": {
+    "total": 303,
+    "original_283_passed": 283,
+    "original_safety_assertion_now_passed": true,
+    "failures": 0,
+    "skips": 0,
+    "xfails": 0,
+    "warnings": 9,
+    "seconds": 86.038,
+    "new_production_test_cases": 14,
+    "historical_diagnosis_cases": 5
+  },
+  "synthetic_comparisons": {
+    "flat": {
+      "before": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.8,
+            "weight_563020": 0.2,
+            "quantity_159915": 80.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 320.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.2173913043,
+            "quantity_159915": 40.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 1.0,
+            "weight_563020": 0.0,
+            "quantity_159915": 92.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 80,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 20.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "old-target"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 52,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-target"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [],
+        "metrics": {
+          "total_return": -0.07999999999999996,
+          "annual_return": null,
+          "max_drawdown": -0.07999999999999996,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 5,
+          "closed_trade_count": 2,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 920.0
+        }
+      },
+      "after": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.8,
+            "weight_563020": 0.2,
+            "quantity_159915": 80.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 320.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.2173913043,
+            "quantity_159915": 40.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 320.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.2173913043,
+            "quantity_159915": 40.0,
+            "quantity_563020": 20.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 80,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop",
+            "stop_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "reason": "old-target",
+            "status": "cancelled_atr",
+            "target_id": "26dfc62d93a4df6f4e36e42c7859ebc3355ae89ba020215ce28438a8de3c4d75",
+            "target_status": "cancelled_atr",
+            "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+            "invalidation_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "invalidation_time": "2024-01-05T15:30:00+08:00",
+            "invalidation_phase": "intraday_after_open",
+            "time_precision": "model_phase_not_actual_intraday_timestamp",
+            "cancelled_remaining_quantity": {
+              "159915": {
+                "buy": 20.0,
+                "sell": 0.0
+              },
+              "563020": {
+                "buy": 0.0,
+                "sell": 20.0
+              }
+            },
+            "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+            "cancelled_target_weights": {
+              "159915": 1.0
+            },
+            "executed_quantity": {
+              "159915": {
+                "buy": 0,
+                "sell": 0
+              },
+              "563020": {
+                "buy": 0,
+                "sell": 0
+              }
+            },
+            "related_stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "metrics": {
+          "total_return": -0.07999999999999996,
+          "annual_return": null,
+          "max_drawdown": -0.07999999999999996,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 3,
+          "closed_trade_count": 1,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 920.0
+        }
+      }
+    },
+    "fees_slippage_and_price_change": {
+      "before": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 17.05804,
+            "receivable": 0,
+            "equity": 997.05804,
+            "weight_159915": 0.7923310061,
+            "weight_563020": 0.1905606217,
+            "quantity_159915": 79.0,
+            "quantity_563020": 19.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 326.06866,
+            "receivable": 0,
+            "equity": 916.06866,
+            "weight_159915": 0.4366484931,
+            "weight_563020": 0.2074080342,
+            "quantity_159915": 40.0,
+            "quantity_563020": 19.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 3.96802,
+            "receivable": 0,
+            "equity": 1004.96802,
+            "weight_159915": 0.9960515958,
+            "weight_563020": 0.0,
+            "quantity_159915": 91.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 79,
+            "fee": 0.79158,
+            "slippage_cost": 1.5799999999999663,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 19,
+            "fee": 0.19038,
+            "slippage_cost": 0.3799999999999919,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 1,
+            "fee": 0.01002,
+            "slippage_cost": 0.019999999999999574,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-target"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 7.984,
+            "quantity": 40,
+            "fee": 0.31936000000000003,
+            "slippage_cost": 0.6400000000000006,
+            "realized_pnl": -82.16015999999996,
+            "realized_price_pnl": -82.16015999999996,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "sell",
+            "price": 9.98,
+            "quantity": 19.0,
+            "fee": 0.18962,
+            "slippage_cost": 0.3799999999999919,
+            "realized_pnl": -1.1399999999999864,
+            "realized_price_pnl": -1.1399999999999864,
+            "dividend_pnl": 0.0,
+            "reason": "old-target"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 51,
+            "fee": 0.51102,
+            "slippage_cost": 1.0199999999999783,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-target"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [],
+        "metrics": {
+          "total_return": 0.004968020000000184,
+          "annual_return": null,
+          "max_drawdown": -0.08393133999999991,
+          "sharpe": 0.76238027462508,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 6,
+          "closed_trade_count": 2,
+          "fees": 2.01198,
+          "slippage_cost": 4.0199999999999285,
+          "final_equity": 1004.9680200000003
+        }
+      },
+      "after": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 17.05804,
+            "receivable": 0,
+            "equity": 997.05804,
+            "weight_159915": 0.7923310061,
+            "weight_563020": 0.1905606217,
+            "quantity_159915": 79.0,
+            "quantity_563020": 19.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 326.06866,
+            "receivable": 0,
+            "equity": 916.06866,
+            "weight_159915": 0.4366484931,
+            "weight_563020": 0.2074080342,
+            "quantity_159915": 40.0,
+            "quantity_563020": 19.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 326.06866,
+            "receivable": 0,
+            "equity": 956.06866,
+            "weight_159915": 0.4602179931,
+            "weight_563020": 0.198730497,
+            "quantity_159915": 40.0,
+            "quantity_563020": 19.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 79,
+            "fee": 0.79158,
+            "slippage_cost": 1.5799999999999663,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 19,
+            "fee": 0.19038,
+            "slippage_cost": 0.3799999999999919,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.02,
+            "quantity": 1,
+            "fee": 0.01002,
+            "slippage_cost": 0.019999999999999574,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-target",
+            "target_id": "26dfc62d93a4df6f4e36e42c7859ebc3355ae89ba020215ce28438a8de3c4d75"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 7.984,
+            "quantity": 40.0,
+            "fee": 0.31936000000000003,
+            "slippage_cost": 0.6400000000000006,
+            "realized_pnl": -82.16015999999996,
+            "realized_price_pnl": -82.16015999999996,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop",
+            "stop_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "reason": "old-target",
+            "status": "cancelled_atr",
+            "target_id": "26dfc62d93a4df6f4e36e42c7859ebc3355ae89ba020215ce28438a8de3c4d75",
+            "target_status": "cancelled_atr",
+            "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+            "invalidation_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "invalidation_time": "2024-01-05T15:30:00+08:00",
+            "invalidation_phase": "intraday_after_open",
+            "time_precision": "model_phase_not_actual_intraday_timestamp",
+            "cancelled_remaining_quantity": {
+              "159915": {
+                "buy": 19.0,
+                "sell": 0.0
+              },
+              "563020": {
+                "buy": 0.0,
+                "sell": 19.0
+              }
+            },
+            "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+            "cancelled_target_weights": {
+              "159915": 1.0
+            },
+            "executed_quantity": {
+              "159915": {
+                "buy": 1,
+                "sell": 0
+              },
+              "563020": {
+                "buy": 0,
+                "sell": 0
+              }
+            },
+            "related_stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "metrics": {
+          "total_return": -0.043931339999999874,
+          "annual_return": null,
+          "max_drawdown": -0.08393133999999991,
+          "sharpe": -3.3960646596358814,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 4,
+          "closed_trade_count": 1,
+          "fees": 1.31134,
+          "slippage_cost": 2.6199999999999584,
+          "final_equity": 956.0686600000001
+        }
+      }
+    },
+    "gap_confirmed_before_open_orders": {
+      "before": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.4,
+            "weight_563020": 0.6,
+            "quantity_159915": 40.0,
+            "quantity_563020": 60.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 140.0,
+            "receivable": 0,
+            "equity": 940.0,
+            "weight_159915": 0.2127659574,
+            "weight_563020": 0.6382978723,
+            "quantity_159915": 20.0,
+            "quantity_563020": 60.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 940.0,
+            "weight_159915": 1.0,
+            "weight_563020": 0.0,
+            "quantity_159915": 94.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 40,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 60,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 7.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -60.0,
+            "realized_price_pnl": -60.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 60.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "old-target"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 74,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-target"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [],
+        "metrics": {
+          "total_return": -0.06000000000000005,
+          "annual_return": null,
+          "max_drawdown": -0.06000000000000005,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 5,
+          "closed_trade_count": 2,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 940.0
+        }
+      },
+      "after": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.4,
+            "weight_563020": 0.6,
+            "quantity_159915": 40.0,
+            "quantity_563020": 60.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 140.0,
+            "receivable": 0,
+            "equity": 940.0,
+            "weight_159915": 0.2127659574,
+            "weight_563020": 0.6382978723,
+            "quantity_159915": 20.0,
+            "quantity_563020": 60.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 140.0,
+            "receivable": 0,
+            "equity": 940.0,
+            "weight_159915": 0.2127659574,
+            "weight_563020": 0.6382978723,
+            "quantity_159915": 20.0,
+            "quantity_563020": 60.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 40,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "1f66e8907e33506b04314b05e20d90d9436763fe07090daa7c8f2995a4e31775"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 60,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "1f66e8907e33506b04314b05e20d90d9436763fe07090daa7c8f2995a4e31775"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 7.0,
+            "quantity": 20.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -60.0,
+            "realized_price_pnl": -60.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop",
+            "stop_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "orders": 3,
+        "cancelled_targets": [
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "reason": "old-target",
+            "status": "cancelled_atr",
+            "target_id": "26dfc62d93a4df6f4e36e42c7859ebc3355ae89ba020215ce28438a8de3c4d75",
+            "target_status": "cancelled_atr",
+            "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+            "invalidation_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "invalidation_time": "2024-01-05T09:30:00+08:00",
+            "invalidation_phase": "open_gap",
+            "time_precision": "model_phase_not_actual_intraday_timestamp",
+            "cancelled_remaining_quantity": {
+              "159915": {
+                "buy": 60.0,
+                "sell": 0.0
+              },
+              "563020": {
+                "buy": 0.0,
+                "sell": 60.0
+              }
+            },
+            "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+            "cancelled_target_weights": {
+              "159915": 1.0
+            },
+            "executed_quantity": {
+              "159915": {
+                "buy": 0,
+                "sell": 0
+              },
+              "563020": {
+                "buy": 0,
+                "sell": 0
+              }
+            },
+            "related_stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "metrics": {
+          "total_return": -0.06000000000000005,
+          "annual_return": null,
+          "max_drawdown": -0.06000000000000005,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 3,
+          "closed_trade_count": 1,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 940.0
+        }
+      }
+    },
+    "repeated_event_with_new_decision": {
+      "before": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.8,
+            "weight_563020": 0.2,
+            "quantity_159915": 80.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 320.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.2173913043,
+            "quantity_159915": 40.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 536.0,
+            "receivable": 0,
+            "equity": 856.0,
+            "weight_159915": 0.3738317757,
+            "weight_563020": 0.0,
+            "quantity_159915": 32.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 80,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-05T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 20.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "new-weekly-decision"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-05T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 24,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "new-weekly-decision"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 32,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -64.0,
+            "realized_price_pnl": -64.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop"
+          }
+        ],
+        "orders": 7,
+        "cancelled_targets": [],
+        "metrics": {
+          "total_return": -0.14400000000000002,
+          "annual_return": null,
+          "max_drawdown": -0.14400000000000002,
+          "sharpe": -18.197916889151834,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 6,
+          "closed_trade_count": 3,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 856.0
+        }
+      },
+      "after": {
+        "curve": [
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 0.8,
+            "weight_563020": 0.2,
+            "quantity_159915": 80.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-05T00:00:00.000",
+            "cash": 320.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.2173913043,
+            "quantity_159915": 40.0,
+            "quantity_563020": 20.0
+          },
+          {
+            "date": "2024-01-08T00:00:00.000",
+            "cash": 280.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.6956521739,
+            "weight_563020": 0.0,
+            "quantity_159915": 64.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 80,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-03T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "cf92ebd8d7871ef866b3c490b91deda33b7c89119e30327e6af2ac24a4bca837"
+          },
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "ATR-fixed-event",
+            "execution_model": "daily_ohlc_preset_stop",
+            "stop_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-05T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 20.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "new-weekly-decision",
+            "target_id": "4ba112dde0af3f0681c2d58a8f6b02ba018aa06e18fbcce4becf6cff0b67351a"
+          },
+          {
+            "date": "2024-01-08",
+            "signal_at": "2024-01-05T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 24,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "new-weekly-decision",
+            "target_id": "4ba112dde0af3f0681c2d58a8f6b02ba018aa06e18fbcce4becf6cff0b67351a"
+          }
+        ],
+        "orders": 7,
+        "cancelled_targets": [
+          {
+            "date": "2024-01-05",
+            "signal_at": "2024-01-04T15:30:00+08:00",
+            "reason": "old-target",
+            "status": "cancelled_atr",
+            "target_id": "26dfc62d93a4df6f4e36e42c7859ebc3355ae89ba020215ce28438a8de3c4d75",
+            "target_status": "cancelled_atr",
+            "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+            "invalidation_event_id": "2249fe4b8eade79be80c7741d0839220d48acf4dbcf41c3b6f0abada8ea06f78",
+            "invalidation_time": "2024-01-05T15:30:00+08:00",
+            "invalidation_phase": "intraday_after_open",
+            "time_precision": "model_phase_not_actual_intraday_timestamp",
+            "cancelled_remaining_quantity": {
+              "159915": {
+                "buy": 20.0,
+                "sell": 0.0
+              },
+              "563020": {
+                "buy": 0.0,
+                "sell": 20.0
+              }
+            },
+            "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+            "cancelled_target_weights": {
+              "159915": 1.0
+            },
+            "executed_quantity": {
+              "159915": {
+                "buy": 0,
+                "sell": 0
+              },
+              "563020": {
+                "buy": 0,
+                "sell": 0
+              }
+            },
+            "related_stop_order_id": "70122ab683e34070f781b074c62946694bddd6e4f2fb34fec28c49450d524a65"
+          }
+        ],
+        "metrics": {
+          "total_return": -0.07999999999999996,
+          "annual_return": null,
+          "max_drawdown": -0.07999999999999996,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 5,
+          "closed_trade_count": 2,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 920.0
+        }
+      }
+    },
+    "original_minimal": {
+      "before": {
+        "curve": [
+          {
+            "date": "2024-01-02T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 1.0,
+            "weight_563020": 0.0,
+            "quantity_159915": 100.0,
+            "quantity_563020": 0.0
+          },
+          {
+            "date": "2024-01-03T00:00:00.000",
+            "cash": 520.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.0,
+            "quantity_159915": 40.0,
+            "quantity_563020": 0.0
+          },
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 10.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.7934782609,
+            "weight_563020": 0.1956521739,
+            "quantity_159915": 73.0,
+            "quantity_563020": 18.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-02",
+            "signal_at": "2024-01-01T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 100,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial"
+          },
+          {
+            "date": "2024-01-03",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "old-mixed"
+          },
+          {
+            "date": "2024-01-03",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "synthetic-ATR",
+            "execution_model": "daily_ohlc_preset_stop"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 33,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-mixed"
+          },
+          {
+            "date": "2024-01-04",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "563020",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 18,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "old-mixed"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [],
+        "metrics": {
+          "total_return": -0.07999999999999996,
+          "annual_return": null,
+          "max_drawdown": -0.07999999999999996,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 5,
+          "closed_trade_count": 2,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 920.0
+        }
+      },
+      "after": {
+        "curve": [
+          {
+            "date": "2024-01-02T00:00:00.000",
+            "cash": 0.0,
+            "receivable": 0,
+            "equity": 1000.0,
+            "weight_159915": 1.0,
+            "weight_563020": 0.0,
+            "quantity_159915": 100.0,
+            "quantity_563020": 0.0
+          },
+          {
+            "date": "2024-01-03T00:00:00.000",
+            "cash": 520.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.0,
+            "quantity_159915": 40.0,
+            "quantity_563020": 0.0
+          },
+          {
+            "date": "2024-01-04T00:00:00.000",
+            "cash": 520.0,
+            "receivable": 0,
+            "equity": 920.0,
+            "weight_159915": 0.4347826087,
+            "weight_563020": 0.0,
+            "quantity_159915": 40.0,
+            "quantity_563020": 0.0
+          }
+        ],
+        "trades": [
+          {
+            "date": "2024-01-02",
+            "signal_at": "2024-01-01T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "buy",
+            "price": 10.0,
+            "quantity": 100,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": null,
+            "realized_price_pnl": null,
+            "dividend_pnl": null,
+            "reason": "initial",
+            "target_id": "90ca63ab67615589090ee852ec081b76d5880c753ec4d7a06891b961bd7ff472"
+          },
+          {
+            "date": "2024-01-03",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 10.0,
+            "quantity": 20,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": 0.0,
+            "realized_price_pnl": 0.0,
+            "dividend_pnl": 0.0,
+            "reason": "old-mixed",
+            "target_id": "d2f43a6b96708be8d8eafdfe770f4ebeb29a395bc6af9fa04db4407be7532d58"
+          },
+          {
+            "date": "2024-01-03",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "symbol": "159915",
+            "side": "sell",
+            "price": 8.0,
+            "quantity": 40.0,
+            "fee": 0.0,
+            "slippage_cost": 0.0,
+            "realized_pnl": -80.0,
+            "realized_price_pnl": -80.0,
+            "dividend_pnl": 0.0,
+            "reason": "synthetic-ATR",
+            "execution_model": "daily_ohlc_preset_stop",
+            "stop_event_id": "f3cd0c206fad01dcc2ea041ed9f9a6cd41e81e5ae5ff00fb5329281940b6e75a",
+            "stop_order_id": "51581c3fe7a470a1d806eb2f0aa462964c8fbe6269ff1d856c3360012e8b851e"
+          }
+        ],
+        "orders": 5,
+        "cancelled_targets": [
+          {
+            "date": "2024-01-03",
+            "signal_at": "2024-01-02T15:30:00+08:00",
+            "reason": "old-mixed",
+            "status": "cancelled_atr",
+            "target_id": "d2f43a6b96708be8d8eafdfe770f4ebeb29a395bc6af9fa04db4407be7532d58",
+            "target_status": "cancelled_atr",
+            "invalidation_reason": "ATR_STOP_INVALIDATES_WHOLE_UNFINISHED_TARGET",
+            "invalidation_event_id": "f3cd0c206fad01dcc2ea041ed9f9a6cd41e81e5ae5ff00fb5329281940b6e75a",
+            "invalidation_time": "2024-01-03T15:30:00+08:00",
+            "invalidation_phase": "intraday_after_open",
+            "time_precision": "model_phase_not_actual_intraday_timestamp",
+            "cancelled_remaining_quantity": {
+              "159915": {
+                "buy": 0.0,
+                "sell": 0.0
+              },
+              "563020": {
+                "buy": 20.0,
+                "sell": 0.0
+              }
+            },
+            "remaining_quantity_basis": "pre_stop_fill_current_open_model_equity_and_quantities",
+            "cancelled_target_weights": {
+              "159915": 0.8,
+              "563020": 0.2
+            },
+            "executed_quantity": {
+              "159915": {
+                "buy": 0,
+                "sell": 20
+              },
+              "563020": {
+                "buy": 0,
+                "sell": 0
+              }
+            },
+            "related_stop_order_id": "51581c3fe7a470a1d806eb2f0aa462964c8fbe6269ff1d856c3360012e8b851e"
+          }
+        ],
+        "metrics": {
+          "total_return": -0.07999999999999996,
+          "annual_return": null,
+          "max_drawdown": -0.07999999999999996,
+          "sharpe": -9.165151389911681,
+          "win_rate": 0.0,
+          "payoff_ratio": null,
+          "profit_factor": 0.0,
+          "trade_count": 3,
+          "closed_trade_count": 2,
+          "fees": 0.0,
+          "slippage_cost": 0.0,
+          "final_equity": 920.0
+        }
+      }
+    }
+  },
+  "files_changed_this_round": [
+    "src/spear_shield/backtest/engine.py",
+    "src/spear_shield/backtest/models.py",
+    "src/spear_shield/backtest/research.py",
+    "src/spear_shield/backtest/strategy_replay.py",
+    "src/spear_shield/backtest/worker.py",
+    "tests/integration/test_phase65_audit.py",
+    "tests/unit/test_atr_stop_reentry_diagnosis.py",
+    "docs/phase6_5/atr_stop_reentry_decision.md",
+    "docs/phase6_5/audit_report.md"
+  ],
+  "frozen_policy_unchanged": true,
+  "policy_sha256": "4e06628a8943b675f9b2dd079ce30ca89bef4f977edbfc4eb3d2eee8378dcce7",
+  "evidence_sha256": {
+    "real-before.json": "c18972c52af5293945e8494909a7d7b1c437d2352ce8366831004e4288036ac8",
+    "real-after-final.json": "18891f3d8e8f47d06e86d4b9b4a3bb3da244a47fedb1ce506da5514edb006e1c",
+    "final-tests.xml": "f5b845a917a2261ac258418525d36bb9265b3e3e5d460e9656bdbf70898dce4a",
+    "acceptance-tests.xml": "4df9c5b80628d2ed04729ae5c5c385032b69fc8625d88f50366a0c1f5f8228db"
+  },
+  "limitations": [
+    "historical qfq/time assumptions remain partial",
+    "restart is bound-data deterministic replay, not intraday live checkpoint",
+    "API journal_path omitted means in-memory-only; desktop strategy worker passes durable path"
+  ],
+  "committed": false,
+  "pushed": false,
+  "changed_files_this_round_supplement": [
+    "CHANGELOG.md",
+    "src/spear_shield/backtest/execution_journal.py",
+    "tests/unit/test_atr_target_invalidation.py",
+    "tests/fixtures/b02_legacy_engine.py",
+    "scripts/compare_atr_target_fix.py",
+    "docs/architecture/atr_target_execution.md",
+    "docs/phase6_5/atr_target_fix_results.md",
+    "docs/phase6_5/manifests/atr_target_fix_evidence.json"
+  ],
+  "head": "5aa322defdbc7fa10f121a39acb92e3bb0950ddb",
+  "new_execution_file_hashes": {
+    "src/spear_shield/backtest/models.py": "386dacf5a45c8bc1b689b2d59ab761778f4dfc80bd61ea12f129585930432b5c",
+    "src/spear_shield/backtest/engine.py": "cce013e6fd7d869f25f72e36f29aa3f1ed348dac8397963dbfad52c3f1425080",
+    "src/spear_shield/backtest/execution_journal.py": "b2446bdc88f36aa11ef1f3603fd4fde4bb3d7426822e513f63e9fec02e268a46",
+    "src/spear_shield/backtest/strategy_replay.py": "a57006d39a2541383e054802cb7d4bcdb8ca4a8f94d619a9f8da2aeafd0508d3",
+    "src/spear_shield/backtest/research.py": "971fbb16bdb5d6d4b220558baafad5d314a9eebf1844c6403e0594904003f65a",
+    "src/spear_shield/backtest/worker.py": "45db0787c8a42d22dd8f97c519d86df98be0de91e293be183f51a3dd9e8ad8a0"
+  }
+}

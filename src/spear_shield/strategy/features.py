@@ -41,7 +41,19 @@ def settled_bars(daily, calendar, as_of, period):
             continue
         group = groups.get(slot, df.iloc[:0])
         expected = set(sessions[slots == slot].date)
-        if expected != set(group.date.dt.date):
+        numeric = group[["open", "high", "low", "close", "volume"]].apply(
+            pd.to_numeric, errors="coerce"
+        )
+        valid = (
+            len(group) == len(expected)
+            and expected == set(group.date.dt.date)
+            and np.isfinite(numeric).all().all()
+            and (numeric[["open", "high", "low", "close"]] > 0).all().all()
+            and (numeric.volume >= 0).all()
+            and (numeric.high >= numeric[["open", "low", "close"]].max(axis=1)).all()
+            and (numeric.low <= numeric[["open", "close"]].min(axis=1)).all()
+        )
+        if not valid:
             rows.append(
                 {
                     "date": settled.loc[slot],
@@ -52,11 +64,11 @@ def settled_bars(daily, calendar, as_of, period):
         rows.append(
             {
                 "date": settled.loc[slot],
-                "open": float(group.iloc[0].open),
-                "high": float(group.high.max()),
-                "low": float(group.low.min()),
-                "close": float(group.iloc[-1].close),
-                "volume": float(group.volume.sum()),
+                "open": float(numeric.iloc[0].open),
+                "high": float(numeric.high.max()),
+                "low": float(numeric.low.min()),
+                "close": float(numeric.iloc[-1].close),
+                "volume": float(numeric.volume.sum()),
             }
         )
     return pd.DataFrame(
@@ -68,7 +80,7 @@ def complete_segment_indicators(bars, period):
     """缺失周期保留NaN；递推指标在下一完整段重新预热，不永久污染后续。"""
     if bars.empty:
         return IndicatorEngine(period).compute(bars).data
-    valid = bars[["open", "high", "low", "close", "volume"]].notna().all(axis=1)
+    valid = np.isfinite(bars[["open", "high", "low", "close", "volume"]]).all(axis=1)
     segments = valid.ne(valid.shift(fill_value=False)).cumsum()
     output = []
     for _, block in bars.groupby(segments, sort=False):
@@ -122,14 +134,24 @@ def candle_features(weekly, policy):
         "effective_above_ma60": c > ma,
         "bullish_week": c > o,
         "retest_ma60": l <= ma * 1.03 and c >= ma,
-        "two_weeks_above_ma60": bool(
-            len(weekly) >= 2
-            and weekly.tail(2).ma60.notna().all()
-            and (weekly.tail(2).close > weekly.tail(2).ma60).all()
-        ),
         "long_upper_shadow": h > l
         and (h - max(o, c)) / (h - l) > policy.parameters["upper_shadow_fraction"],
     }
+
+    def both_known(checks):
+        return (
+            False
+            if any(v is False for v in checks)
+            else None if any(v is None for v in checks) else True
+        )
+
+    above = [
+        bool(row.close > row.ma60) if _finite(row.close) and _finite(row.ma60) else None
+        for _, row in weekly.tail(2).iterrows()
+    ]
+    values["two_weeks_above_ma60"] = both_known(
+        ([None] if len(weekly) < 2 else []) + above
+    )
     baseline = (
         weekly.volume.shift(1)
         .rolling(
@@ -150,11 +172,20 @@ def candle_features(weekly, policy):
     if len(weekly) >= 2 and weekly.tail(2).ma60.notna().all():
         # 前周满足突破/量/趋势但未收阳，当前为连续站稳的第二周。
         prev = weekly.iloc[-2]
-        values["missed_first_nonbullish"] = bool(
-            prev.close > prev.ma60
-            and prev.close <= prev.open
-            and _finite(prev.vol_pct52)
-            and prev.vol_pct52 >= 60
+        values["missed_first_nonbullish"] = both_known(
+            [
+                (
+                    bool(prev.close > prev.ma60)
+                    if _finite(prev.close) and _finite(prev.ma60)
+                    else None
+                ),
+                (
+                    bool(prev.close <= prev.open)
+                    if _finite(prev.close) and _finite(prev.open)
+                    else None
+                ),
+                bool(prev.vol_pct52 >= 60) if _finite(prev.vol_pct52) else None,
+            ]
         )
     return values
 
@@ -164,6 +195,8 @@ def double_top_features(weekly):
     if len(weekly) < 9 or not weekly.tail(9).close.notna().all():
         return {}
     data = weekly.tail(52).reset_index(drop=True)
+    if not np.isfinite(data[["high", "low", "close"]]).all().all():
+        return {}
     pivots = [
         i
         for i in range(2, len(data) - 2)
@@ -313,7 +346,15 @@ def build_operational_snapshot(
                 while start > 0 and previous.slope_ma60.iloc[start - 1] <= 0:
                     start -= 1
                 rally = previous.high.iloc[start : last + 1].max()
-                put("break_bear_rally_high", bool(x.close > rally))
+                segment = previous.high.iloc[start : last + 1]
+                put(
+                    "break_bear_rally_high",
+                    (
+                        bool(x.close > rally)
+                        if _finite(x.close) and np.isfinite(segment).all()
+                        else None
+                    ),
+                )
             put(
                 "volume_breakout",
                 bool(x.vol_pct52 >= 60) if _finite(x.vol_pct52) else None,
@@ -322,7 +363,7 @@ def build_operational_snapshot(
         put("fast_entry_allowed", True, "授权快速通道负月线封顶20%")
         put(
             "restore_allowed",
-            bool(_finite(x.ma10) and x.close >= x.ma10),
+            bool(x.close >= x.ma10) if _finite(x.ma10) and _finite(x.close) else None,
             "授权次周收回>=MA10，仍受风险滤网约束",
         )
     if len(dividend_daily):

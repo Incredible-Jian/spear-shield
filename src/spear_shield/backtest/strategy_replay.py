@@ -43,6 +43,7 @@ class StrategyReplay:
         self.receipted = set()
         self.audit = []
         self.receipts = []
+        self.partial_entries = {}
         self.lots = []
         self.cost = 0.0
         self.peak = None
@@ -123,7 +124,7 @@ class StrategyReplay:
         ):
             decision = self.pending[target.reason]
             kind = decision.selected.action.kind
-            if event["status"] in ("superseded", "unfilled_end"):
+            if event["status"] in ("superseded", "unfilled_end", "cancelled_atr"):
                 self.queued_risks.discard(decision.selected.rule_id)
             attack_fills = [
                 t
@@ -131,6 +132,32 @@ class StrategyReplay:
                 if t["symbol"] == "159915"
                 and t["side"] == ("buy" if kind in ("entry", "restore") else "sell")
             ]
+            if kind in ("entry", "restore") and attack_fills:
+                self.partial_entries[target.reason] = {
+                    "reason": target.reason,
+                    "rule_id": decision.selected.rule_id,
+                    "first_actual_fill": self.partial_entries.get(
+                        target.reason, {}
+                    ).get(
+                        "first_actual_fill",
+                        min(t.get("date", day.isoformat()) for t in attack_fills),
+                    ),
+                    "cumulative_quantity": sum(t["quantity"] for t in attack_fills),
+                    "status": event["status"],
+                    "completed": event["completed"],
+                    "stage_confirmed": bool(
+                        event["completed"]
+                        and event["status"] == "completed_with_cash_and_lot_constraints"
+                    ),
+                }
+            if decision.selected.priority < 4 and any(
+                t["symbol"] == "159915" and t["side"] == "sell" for t in trades
+            ):
+                # 实际发生新的减仓即废弃旧补回计划，不等待其它资产完成。
+                self.position = replace(
+                    self.position, pending_restore_weight=0.0, restore_due=None
+                )
+                self.restore_quantity = 0.0
             if attack_fills and decision.selected.priority < 4:
                 # 即使其它资产使目标仍待成交/随后被取消，已发生的风险减仓不能被遗忘后再次按比例减。
                 self.risk_latched.add(decision.selected.rule_id)
@@ -178,6 +205,8 @@ class StrategyReplay:
                         self.restore_quantity
                         - sum(t["quantity"] for t in attack_fills),
                     )
+        if target is not None and event["status"] == "cancelled_atr":
+            self.pending.pop(target.reason, None)
         qty = event["quantities"].get("159915", 0.0)
         if qty <= 1e-9:
             self.position = replace(
@@ -204,6 +233,25 @@ class StrategyReplay:
                 "quantities": event["quantities"],
                 "costs": event["costs"],
                 "stages": self.position.stages,
+                "target_reason": target.reason if target is not None else None,
+                "target_id": event.get("target_id"),
+                "target_state": event.get("target_state"),
+                "target_signal_at": (
+                    target.signal_at.isoformat() if target is not None else None
+                ),
+                "trade_fills": [dict(t) for t in trades],
+                "cash": event.get("cash"),
+                "stop_instruction": (
+                    {
+                        "symbol": event["stop"].symbol,
+                        "known_at": event["stop"].known_at.isoformat(),
+                        "trigger_price": event["stop"].trigger_price,
+                        "fraction": event["stop"].fraction,
+                        "reason": event["stop"].reason,
+                    }
+                    if event.get("stop") is not None
+                    else None
+                ),
             }
         )
 
@@ -393,6 +441,24 @@ class StrategyReplay:
                     if snapshot.get(key) is None
                 ],
                 "rule_status": {r.rule_id: r.status.value for r in decision.results},
+                "rule_conditions": {
+                    r.rule_id: [
+                        {
+                            "name": c.name,
+                            "truth": (
+                                "UNKNOWN"
+                                if c.value is None
+                                else "TRUE" if c.value else "FALSE"
+                            ),
+                            "expression": c.expression,
+                            "inputs": c.inputs,
+                            "pending_definition": c.pending_definition,
+                        }
+                        for c in r.conditions
+                    ]
+                    for r in decision.results
+                },
+                "target_emitted": False,
                 "evidence": {
                     k: {
                         "value": e.value,
@@ -439,23 +505,25 @@ class StrategyReplay:
             else:
                 weights = {"159915": attack}
             reason = f"{as_of.date()}:{decision.selected.rule_id}"
-            self.pending[reason] = decision
-            if decision.selected.priority < 4:
-                self.queued_risks.add(decision.selected.rule_id)
         elif self.position.attack_weight == 0 and plan.get("executable"):
             weights = {"159915": 0.0, **plan["weights"]}
             reason = f"{as_of.date()}:DEFENSE_DYNAMIC"
         if weights is None:
             return None
         # 防守每周仅在明显偏离(0.5个百分点)时再平衡，避免费用引起无限微小交易。
-        if all(
+        if decision.selected is None and all(
             abs(float(row.get(f"weight_{s}", 0.0)) - weights.get(s, 0.0)) < 0.005
             for s in self.execution_bars
         ):
             return None
+        if decision.selected:
+            self.pending[reason] = decision
+            if decision.selected.priority < 4:
+                self.queued_risks.add(decision.selected.rule_id)
+        self.audit[-1]["target_emitted"] = True
         return Target(as_of, weights, reason, as_of)
 
-    def run(self, config):
+    def run(self, config, *, journal_path=None):
         self.fee_rate, self.slippage, self.lot_size = (
             config.fee_rate,
             config.slippage,
@@ -467,6 +535,7 @@ class StrategyReplay:
             on_close=self.close,
             on_execution=self.execution,
             stop_provider=self.stop_provider,
+            journal_path=journal_path,
         )
         unresolved = sorted(
             {rule for row in self.audit for rule in row["unresolved_rules"]}
@@ -479,6 +548,7 @@ class StrategyReplay:
                 "policy_parameters": dict(self.policy.parameters),
                 "strategy_audit": self.audit,
                 "execution_receipts": self.receipts,
+                "partial_entry_lifecycle": list(self.partial_entries.values()),
                 "open_lots": self.lots,
                 "unresolved_rules": unresolved,
                 "complete_strategy_validated": False,
@@ -514,4 +584,10 @@ class StrategyReplay:
                 ("H30269", self.dataset.dividend),
             )
         }
+        frame = self.execution_bars["159915"]
+        result.metadata["etf_indicator_input_bars"] = json.loads(
+            frame.loc[frame.date.dt.date <= cutoff].to_json(
+                orient="records", date_format="iso"
+            )
+        )
         return result
